@@ -5,15 +5,15 @@ Depos creates a stablecoin, which is collaralized with tokenized debts and oblig
 For more info on tokenized debt please visit [dBonds protocol repo](https://github.com/thedeposbank/zilliqa-dbonds)
 
 ## System structure overview
-1. On the one side contract holds collateral which consists of to parts.
+1. On the one side contract holds collateral which consists of to parts:
   * Major part is tokenized debts, which is quite stable in value and produces predictable fixed income to the system as the `Issuers` who put them inside pay interest in stablecoins (say, 2% apr) to the contract.
   * Minor part consists of liquid crypto (ex. `ZIL`) which has some volatility, though that doesn't affect the system much as it is the minor part of the whole pie. Minor part serves as easy in-and-out for `Users` and in analogy with bank can be compared with cash on bank balance, which any card-holder can deposit/withdraw within some limits. This part brings income to the system via market-making.
 
 2. On the other side there is stablecoin supply.
 From time to time system makes sure, that total supply of stablecoins equals to the total value of collateral, so that every stablecoin is 100% collateralized with valuable on-chain assets. To absorb all volatility/losses/revenue contract has its own stablecoin `capital`, which is originated and maintained by selling `DPS` - utility and governance token.
 
-## `Capital` and `DPS`.
-All system revenues/losses are absorbed by the `capital`, so that new stablecoins are either issued to the `capital` or are burnt from it depending on the case. `DPS` has `nominal price` which is simply share of `capital` for one `DPS` token. `DPS` token can be used at nominal price for `[TODO: WHAT ARE THE UTILITY FUNCTIONS OF DPS WITH NOMINAL PRICE]`, though the `market price` of `DPS` is supposed to reflect all future dicounted cashflows (interest, market-making, future FX services etc.) and expected to be much higher than `nominal price`. In case system experiences lack of `capital` to obsorb sudden loss and keep every stablecoin collateralized, new `DPS` tokens are issued and sold to the market to replenish the `capital`, given that in long-term system is proven to be profitable.
+## `Capital` and `DPS`
+All system revenues/losses are absorbed by the `capital`, so that new stablecoins are either issued to the `capital` or are burnt from it depending on the case. `DPS` has `nominal price` which is simply a share of `capital` for one `DPS` token. `DPS` token can be used at nominal price for `[TODO: WHAT ARE THE UTILITY FUNCTIONS OF DPS WITH NOMINAL PRICE]`, though the `market price` of `DPS` is supposed to reflect all future dicounted cashflows (interest, market-making, future FX services etc.) and expected to be much higher than `nominal price`. In case system experiences lack of `capital` to absorb sudden loss and keep every stablecoin collateralized, new `DPS` tokens are issued and sold to the market to replenish the `capital`, given that in long-term system is proven to be profitable.
 
 
 
@@ -56,7 +56,7 @@ Notes:
 3. Have different premitions for different roles
 4. Have account to manage permitions for roles
 
-# Suport of `DPS` governance functions (in future)
+## Suport of `DPS` governance functions (in future)
 
 1. Approve/decline governance roles substitution
 2. Approve/decline contract upgrades
