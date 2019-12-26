@@ -53,12 +53,17 @@ Notes:
 ## Governance and housekeeping
 
 **1.** Pause/unpause contract
+
 **2.** Blacklist/unblacklist someone
+
 **3.** Have different premitions for different roles
+
 **4.** Have account to manage permitions for roles
 
 ## Suport of `DPS` governance functions (in future)
 
 **1.** Approve/decline governance roles substitution
+
 **2.** Approve/decline contract upgrades
+
 **3.** Approve/decline system parameters upgrade
