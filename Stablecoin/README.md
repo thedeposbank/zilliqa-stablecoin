@@ -41,6 +41,7 @@ Notes:
 ## Support of tokenized debts lifecycle
 
 **1.** Approve tokenized debt token contract
+
 **2.** If the tokenized debt is paid off, contract can claim the payment back (see [dBonds protocol repo](https://github.com/thedeposbank/zilliqa-dbonds)
 
 ## Support of `DPS` utility functions
