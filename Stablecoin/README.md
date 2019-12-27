@@ -6,7 +6,7 @@ For more info on tokenized debt please visit [dBonds protocol repo](https://gith
 
 ## System structure overview
 **1.** On the one side contract holds collateral which consists of to parts:
-  * Major part is tokenized debts, which is quite stable in value and produces predictable fixed income to the system as the `Issuers` who put them inside pay interest in stablecoins (say, 2% apr) to the contract.
+  * Major part is tokenized debts, which is quite stable in value and produces predictable fixed income to the system as the ` bond_issuers` who put them inside pay interest in stablecoins (say, 2% apr) to the contract.
   * Minor part consists of liquid crypto (ex. `ZIL`) which has some volatility, though that doesn't affect the system much as it is the minor part of the whole pie. Minor part serves as easy in-and-out for `Users` and in analogy with bank can be compared with cash on bank balance, which any card-holder can deposit/withdraw within some limits. This part brings income to the system via market-making.
 
 **2.** On the other side there is stablecoin supply.
@@ -26,8 +26,8 @@ Notes:
   * to avoid oracle front-running trade is made within next block after registering.
   * such a trade can be declined by the contract if it brings the system out of correct risk-management state (ex. order is too large or contract ran out of the liquidity)
 
-**2.** `Issuer` can buy/sell stablecoins
-for pre-authorized tokenized debt at currrent debt-internal price. Only available for tokenized debts originated by the `Issuer` themselves. As the value of collateral changes, total stablecoin supply also changes.
+**2.** ` bond_issuer` can buy/sell stablecoins
+for pre-authorized tokenized debt at currrent debt-internal price. Only available for tokenized debts originated by the ` bond_issuer` themselves. As the value of collateral changes, total stablecoin supply also changes.
 
 Notes:
   * such a trade can be declined by the contract if it brings the system out of correct risk-management state (ex. order is too large or contract ran out of the liquidity)
@@ -38,32 +38,34 @@ Notes:
   * If the `DPS` token is spent as utility token, it does not affect the stablecoin supply but may change `DPS` nominal price as the supply of `DPS` tokens may change.
 
 
-## Support of tokenized debts lifecycle
+### Support of tokenized debts lifecycle
 
 **1.** Approve tokenized debt token contract
 
-**2.** If the tokenized debt is paid off, contract can claim the payment back (see [dBonds protocol repo](https://github.com/thedeposbank/zilliqa-dbonds)
+**2.** If the tokenized debt is paid off, contract can claim the payment back (see [dBonds protocol repo](https://github.com/thedeposbank/zilliqa-dbonds))
 
-## Support of `DPS` utility functions
-
-**1.** In order to have some amount of tokenized debt sold to the contract `Issuer` has to stake appropriate amount of `DPS` inside the contract.
-
-**2.** TODO: something else?
-
-## Governance and housekeeping
+### Governance and housekeeping
 
 **1.** Pause/unpause contract
 
-**2.** Blacklist/unblacklist someone
+**2.** Blacklist/unblacklist address
 
-**3.** Have different premitions for different roles
+**3.** Have different premitions for different administrative roles
 
 **4.** Have account to manage permitions for roles
 
-## Suport of `DPS` governance functions (in future)
+### Support of `DPS` utility functions
+
+**1.** In order to have some amount of tokenized debt sold to the contract ` bond_issuer` has to stake appropriate amount of `DPS` inside the contract.
+
+**2.** TODO: something else?
+
+### Suport of `DPS` governance functions (in future)
 
 **1.** Approve/decline governance roles substitution
 
 **2.** Approve/decline contract upgrades
 
 **3.** Approve/decline system parameters upgrade
+
+
