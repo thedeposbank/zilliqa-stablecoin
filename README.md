@@ -17,7 +17,7 @@ All system revenues/losses are absorbed by the `capital`, so that new stablecoin
 
 
 
-## What functionallity is supported in stablecoin contract
+## What functionallity is supported
 
 ### How stablecoins are minted/redeemed
 **1.** `User` can mint/redeem stablecoins directly via smartcontract in exchange for supported liquid crypto 1:1 at current market rate. `User` can consider it as a direct decentralized one-call trade with the contract. As the value of collateral changes, total stablecoin supply also changes.
