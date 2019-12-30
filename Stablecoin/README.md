@@ -64,11 +64,13 @@ Note that each of the transitions in the token contract takes `initiator` as a p
 
 All the transitions in the contract can be categorized into three categories:
 - _housekeeping transitions_ meant to facilitate basic admin realted tasks.
-- _pause_ transitions to pause and pause the contract.
-- _minting-related transitions_ that allows mining and burning of tokens.
-- _token transfer transitions_ allows to transfer tokens from one user to another.
 - _DPS token usage transitions_ that provide utility functions for DPS token
 - _supply adjustment related transitions_ which keep the number of stablecoins issued close to the present total value of collateral
+
+At the same time, proxy contract has:
+- _minting-related transitions_ that allows mining and burning of tokens.
+- _token transfer transitions_ allows to transfer tokens from one user to another.
+- _pause_ transitions to pause and pause the contract.
 
 Each of these category of transitions are presented in further details below:
 
@@ -85,5 +87,8 @@ Each of these category of transitions are presented in further details below:
 |`approveDBond`|`address : ByStr20, initiator : ByStr20`| Approve dbond token address. An approved address can put/withdraw dBond tokens as collateral. <br> :warning: **Note:**   `initiator` must be the current `dbond_approver` in the contract.| :heavy_check_mark: |
 |`updateOracleApprover`|`newOracleApprover : ByStr20, initiator : ByStr20`| Replace the current `oracle_approver` with the `newOracleApprover`.  <br> :warning: **Note:**  `initiator` must be the current `owner` in the contract.| :heavy_check_mark: |
 |`approveOracle`|`address : ByStr20, Symbol : String, initiator : ByStr20`| Approve price feed oracle address for a given symbol. Approved address can send messages with price updates. <br> :warning: **Note:**   `initiator` must be the current `oracle_approver` in the contract.| :heavy_check_mark: |
+
+#### Pause-related Transitions
+####  Transitions
 
 ### Procedures
