@@ -52,7 +52,6 @@ The table below presents the mutable fields of the contract and their initial va
 
 
 ### Transitions
-Note that each of the transitions in the token contract takes `initiator` as a parameter which as explained above is the caller that calls the proxy contract which in turn calls the token contract.
 
 All the transitions in the contract can be categorized into three categories:
 - _housekeeping transitions_ meant to facilitate basic admin realted tasks.
@@ -66,25 +65,33 @@ Each of these category of transitions are presented in further details below:
 
 | Name | Params | Description | Callable when paused? |
 |--|--|--|--|
-|`transferOwnership`|`newOwner : ByStr20, initiator : ByStr20`|Allows the current `owner` to transfer control of the contract to a `newOwner`. <br>  :warning: **Note:** `initiator` must be the current `owner` in the contract.  | :heavy_check_mark: |
-|`updatePauser`| `newPauser : ByStr20, initiator : ByStr20` |  Replace the current `pauser` with the `newPauser`.  <br>  :warning: **Note:** `initiator` must be the current `owner` in the contract. | :heavy_check_mark: |
-|`blacklist`|`address : ByStr20, initiator : ByStr20`| Blacklist a given address. A blacklisted address can neither send or receive tokens. A `minter` can also be blacklisted. <br> :warning: **Note:**   `initiator` must be the current `blacklister` in the contract.| :heavy_check_mark: |
-|`unBlacklist`|`address : ByStr20, initiator : ByStr20`| Remove a given address from the blacklist.  <br> :warning: **Note:** `initiator` must be the current `blacklister` in the contract.| :heavy_check_mark: |
-|`updateBlacklister`|`newBlacklister : ByStr20, initiator : ByStr20`| Replace the current `blacklister` with the `newBlacklister`.  <br> :warning: **Note:**  `initiator` must be the current `owner` in the contract.| :heavy_check_mark: |
-|`updateContractApprover`|`newContractApprover : ByStr20, initiator : ByStr20`| Replace the current `contractApprover` with the `newContractApprover`.  <br> :warning: **Note:**  `initiator` must be the current `owner` in the contract.| :heavy_check_mark: |
-|`approveContract`|`address : ByStr20, initiator : ByStr20`| Approve contract address. An approved address can mint/burn tokens (burn only from `capital`). dBond tokens as collateral. <br> :warning: **Note:**   `initiator` must be the current `contractApprover` in the contract.| :heavy_check_mark: |
-|`revokeContract`|`address : ByStr20, initiator : ByStr20`| Revoke previously approved contract address | :heavy_check_mark: |
+|`transferOwnership`|`newOwner : ByStr20`|Allows the current `owner` to transfer control of the contract to a `newOwner`. <br>  :warning: **Note:** `_sender` must be the current `owner` in the contract.  | :heavy_check_mark: |
+|`updatePauser`| `newPauser : ByStr20` |  Replace the current `pauser` with the `newPauser`.  <br>  :warning: **Note:** `_sender` must be the current `owner` in the contract. | :heavy_check_mark: |
+|`blacklist`|`address : ByStr20`| Blacklist a given address. A blacklisted address can neither send or receive tokens. A `minter` can also be blacklisted. <br> :warning: **Note:**   `_sender` must be the current `blacklister` in the contract.| :heavy_check_mark: |
+|`unBlacklist`|`address : ByStr20`| Remove a given address from the blacklist.  <br> :warning: **Note:** `_sender` must be the current `blacklister` in the contract.| :heavy_check_mark: |
+|`updateBlacklister`|`newBlacklister : ByStr20`| Replace the current `blacklister` with the `newBlacklister`.  <br> :warning: **Note:**  `_sender` must be the current `owner` in the contract.| :heavy_check_mark: |
+|`updateContractApprover`|`newContractApprover : ByStr20`| Replace the current `contractApprover` with the `newContractApprover`.  <br> :warning: **Note:**  `_sender` must be the current `owner` in the contract.| :heavy_check_mark: |
+|`approveContract`|`address : ByStr20`| Approve contract address. An approved address can mint/burn tokens (burn only from `capital`). dBond tokens as collateral. <br> :warning: **Note:**   `_sender` must be the current `contractApprover` in the contract.| :heavy_check_mark: |
+|`revokeContract`|`address : ByStr20`| Revoke previously approved contract address | :heavy_check_mark: |
 
 #### Pause-related Transitions
 
 | Name | Params | Description | Callable when paused? |
 |--|--|--|--|
-|`pause`| `initiator : ByStr20` | Pause the contract to temporarily stop all transfer of tokens and other operations. Only the current `pauser` can invoke this transition.  <br>  :warning: **Note:** `initiator` must be the current `pauser` in the contract.  | :heavy_check_mark: |
-|`unpause`| `initiator : ByStr20` | Unpause the contract to re-allow all transfer of tokens and other operations. Only the current `pauser` can invoke this transition.  <br>  :warning: **Note:** `initiator` must be the current `pauser` in the contract.  | :heavy_check_mark: |
+|`pause`|  | Pause the contract to temporarily stop all transfer of tokens and other operations. Only the current `pauser` can invoke this transition.  <br>  :warning: **Note:** `initiator` must be the current `pauser` in the contract.  | :heavy_check_mark: |
+|`unpause`|  | Unpause the contract to re-allow all transfer of tokens and other operations. Only the current `pauser` can invoke this transition.  <br>  :warning: **Note:** `initiator` must be the current `pauser` in the contract.  | :heavy_check_mark: |
 
 #### Minting-related Transitions
 
 | Name | Params | Description | Callable when paused? |
 |--|--|--|--|
-|`mint`| `to: ByStr20, value : Uint128, initiator : ByStr20` | Mint `value` number of new tokens and allocate them to the `to` address.  <br>  :warning: **Note:** 1) Only the `approvedContract` can invoke this transition, i.e., `initiator` must be an `approvedContract`, 2) Minting can only be done when the contract is not paused. | <center>:x:</center> |
-|`burn`| `value : Uint128, initiator : ByStr20` | Burn `value` number of tokens from `capital` if available.  <br>  :warning: **Note:**   1) Only the `approvedContract` can burn tokens. 2) Burning can only be done when the contract is not paused.| <center>:x:</center>  |
+|`mint`| `to: ByStr20, value : Uint128` | Mint `value` number of new tokens and allocate them to the `to` address.  <br>  :warning: **Note:** 1) Only the `approvedContract` can invoke this transition, i.e., `_sender` must be an `approvedContract`, 2) Minting can only be done when the contract is not paused. | <center>:x:</center> |
+|`burn`| `value : Uint128` | Burn `value` number of tokens from `capital` if available.  <br>  :warning: **Note:**   1) Only the `approvedContract` can burn tokens. 2) Burning can only be done when the contract is not paused.| <center>:x:</center>  |
+
+#### Token Transfer Transitions
+
+| Name | Params | Description | Callable when paused? |
+|--|--|--|--|
+|`approve`| `spender : ByStr20, value : Uint128` | Approve a `spender` to spend on behalf of a token holder (`_sender`) upto the `value` amount. <br> :warning: **Note:** 1) Only the non-blacklisted minters can invoke this transition, i.e., `_sender` must be a non-blacklisted token holder, 2) The spender must also be non-blacklisted. | <center>:x:</center>  |
+|`transfer`| `to : ByStr20, value : Uint128` | Transfer `value` number of tokens from the `_sender` to the `to` address.  <br>  :warning: **Note:**   1) The `_sender` and the `recipient` should not be blacklisted.|<center>:x:</center>  |
+|`transferFrom`| `from : ByStr20, to : ByStr20, value : Uint128` | Transfer `value` number of tokens on behalf of the `_sender` to the `to` address.  <br>  :warning: **Note:**   1) The `_sender`, the `from` address and the `recipient` should not be blacklisted.|<center>:x:</center>  |

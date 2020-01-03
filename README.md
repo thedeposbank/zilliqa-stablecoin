@@ -46,7 +46,7 @@ Notes:
 Notes: 
   * If the `DPS` token is spent as utility token, it does not affect the stablecoin supply but may change `nominal price` of `DPS` as the supply of `DPS` tokens may change.
 
-**4.** When the collateral value changes and the stablecoin supply adjustment is triggered, system mints/burns to/from capital appropriate amount of stablecoins to maintain 1:1 collaterization.
+**4.** When the collateral value changes and the stablecoin supply adjustment is triggered, system mints/burns to/from `capital` appropriate amount of stablecoins to maintain 1:1 collaterization.
 
 
 ### Support of tokenized debts lifecycle
