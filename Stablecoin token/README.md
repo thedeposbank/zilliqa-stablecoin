@@ -1,6 +1,6 @@
 # Stablecoin contract documentation
 
-This contract represents standard token contract with extention for mint/burn tokens by approved Depos smart contracts (burn only from `capital`).
+This contract represents standard token contract with extention for minting/burning tokens by approved Depos smart contracts and with extention for decentralized governance contract to have right for some critical administrative initiatives.
 
 ### Roles and privileges
 
@@ -26,6 +26,7 @@ The table below lists the parameters that are defined at the contract deployment
 |`symbol`       | `String`  | A ticker symbol for the token. |
 |`decimals`     | `Uint32`  | Defines the smallest unit of the tokens|
 |`init_owner`   | `ByStr20` | The initial owner of the contract. |
+| `init_gov_contract`| `ByStr20` | The initial decentralized governance contract.  |
 
 ### Mutable fields
 
@@ -74,6 +75,7 @@ Each of these category of transitions are presented in further details below:
 |`updateContractApprover`|`newContractApprover : ByStr20`| Replace the current `contractApprover` with the `newContractApprover`.  <br> :warning: **Note:**  `_sender` must be the current `owner` in the contract.| :heavy_check_mark: |
 |`approveContract`|`address : ByStr20`| Approve contract address. An approved address can mint/burn tokens (burn only from `capital`). dBond tokens as collateral. <br> :warning: **Note:**   `_sender` must be the current `contractApprover` in the contract.| :heavy_check_mark: |
 |`revokeContract`|`address : ByStr20`| Revoke previously approved contract address | :heavy_check_mark: |
+|`transferGovernance`|`new_gov : ByStr20`|Allows the current `gov_contract` to change its value to a `new_gov`. <br>  :warning: **Note:** `_sender` must be the current `gov_contract` in the contract.  | :heavy_check_mark: |
 
 #### Pause-related Transitions
 
@@ -87,7 +89,7 @@ Each of these category of transitions are presented in further details below:
 | Name | Params | Description | Callable when paused? |
 |--|--|--|--|
 |`mint`| `to: ByStr20, value : Uint128` | Mint `value` number of new tokens and allocate them to the `to` address.  <br>  :warning: **Note:** 1) Only the `approvedContract` can invoke this transition, i.e., `_sender` must be an `approvedContract`, 2) Minting can only be done when the contract is not paused. | <center>:x:</center> |
-|`burn`| `value : Uint128` | Burn `value` number of tokens from `capital` if available.  <br>  :warning: **Note:**   1) Only the `approvedContract` can burn tokens. 2) Burning can only be done when the contract is not paused.| <center>:x:</center>  |
+|`burn`| `from: ByStr20, value : Uint128` | Burn `value` number of tokens from `from` address.  <br>  :warning: **Note:**   1) Only the `approvedContract` can burn tokens. 2) Burning can only be done when the contract is not paused.| <center>:x:</center>  |
 
 #### Token Transfer Transitions
 
