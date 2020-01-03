@@ -9,7 +9,6 @@
 | `dBond_approver`  | Can approve certain dBond token contract with its owner to hold such tokenized debt as collateral |
 | `oracle_approver` | Can manage oracles for price datafeeds for liquid crypto (ex. `ZIL`) |
 | `dBond_issuer`    | Owner of the dBond token contract, can put/withdraw dBond tokens to the stablecoin contract in exchange of stablecoins. Needs to be explicitely approved by `dBond_approver`. Usually, there are several `dBond_issuers`, who are known partners of Depos |
-|`approved_spender`  | A token holder can designate a certain address to send up to a certain number of tokens on its behalf. These addresses will be called `approved_spender`.  |
 |`gov_contract`| An address which can do critical system changes if collects enough votes in `DPS` tokens, ex. can change `owner`. Only `gov_contract` itself can change its value, so that it is independent of `owner`|
 |`param_changer`| An address for changing parameters of the system |
 
@@ -54,7 +53,6 @@ The table below presents the mutable fields of the contract and their initial va
 
 
 ### Transitions
-Note that each of the transitions in the token contract takes `initiator` as a parameter which as explained above is the caller that calls the proxy contract which in turn calls the token contract.
 
 All the transitions in the contract can be categorized into three categories:
 - _housekeeping transitions_ meant to facilitate basic admin realted tasks.

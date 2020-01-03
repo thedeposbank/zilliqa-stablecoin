@@ -7,6 +7,7 @@ This contract represents standard token contract with extention for mint/burn to
 | Name | Description and privilege |
 |--|--|
 | `init_owner`      | Initial owner of the contract. Most other roles are initialised with this value |
+| `init_gov_contract`| Initial decentralized governance contract.  |
 | `owner`           | Current owner, initialised with `init_owner`. Admin account, has permission for critical actions like changing other roles executors except the `gov_contract` |
 | `pauser`          | Can pause/unpause contract |
 | `blacklister`     | Can blacklist/unblacklist addresses |
@@ -39,7 +40,7 @@ The table below presents the mutable fields of the contract and their initial va
 |`contractApprover`| `ByStr20` | `init_owner`  | Current `contractApprover` in the contract.|
 |`paused`       | `Bool`    | `False`       | Keeps track of whether the contract is current paused or not. `True` means the contract is paused. |
 |`totalSupply`  | `Uint128` | `0`           | The total number of tokens that is in the supply. |
-|`gov_contract`| `Bystr20` | `init_owner` | Current `gov_contract` in the contract.
+|`gov_contract`| `Bystr20` | `init_gov_contract` | Current `gov_contract` in the contract.
 
 #### Maps
 
