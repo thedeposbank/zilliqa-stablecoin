@@ -4,13 +4,16 @@ Depos creates a stablecoin, which is collaralized with tokenized debts and oblig
 
 This is done alongside with the dBonds protocol of debt tokenization. For more info please visit [dBonds protocol repo](https://github.com/thedeposbank/zilliqa-dbonds)
 
-## System structure overview
+## Depos DAO overview
 **1.** On the one side `Depos DAO` holds collateral which consists of to parts:
   * Major part is tokenized debts, which is quite stable in value and produces predictable fixed income to the system as the `bond_issuers` who put them inside pay interest in stablecoins (say, 2% apr) to the contract.
   * Minor part consists of liquid crypto (ex. `ZIL`) which has some volatility, though that doesn't affect the system much as it is the minor part of the whole pie. Minor part serves as an easy in-and-out from stablecoin to other crypto for `user` and in analogy with a bank can be compared with cash on bank balance, which any card-holder can deposit/withdraw within some limits. This part brings income to the system via decentralized market-making.
 
 **2.** On the other side there is stablecoin supply.
 From time to time system makes sure, that total supply of stablecoins equals to the total value of collateral, so that every stablecoin is 100% collateralized with valuable on-chain assets. To absorb all volatility/losses/revenue contract has its own stablecoin `capital`, which is originated and recapitalised by selling utility and governance `DPS` token.
+
+### `Capital` and `DPS`
+All system revenues/losses are absorbed by the `capital`, so that new stablecoins are either issued to the `capital` or are burnt from it depending on the case. `DPS` has `nominal price` which is simply a share of `capital` for one `DPS` token. `DPS` token can be used at nominal price for `[TODO: WHAT ARE THE UTILITY FUNCTIONS OF DPS WITH NOMINAL PRICE]`, though the `market price` of `DPS` is supposed to reflect all future dicounted cashflows (interest, market-making, future FX services etc.) and expected to be much higher than `nominal price`. In case system experiences lack of `capital` to absorb sudden loss and keep every stablecoin collateralized, new `DPS` tokens are issued and sold to the market to replenish the `capital`, given that in long-term system is proven to be profitable.
 
 ## System design overview
 The system is designed as follows
@@ -20,9 +23,6 @@ The system is designed as follows
 - Logic implementation is divided to several independent contracts and can be upated with time. Each contract can be called only either by `proxy contract` or by other logic implementation ontract.
 - Internal `capital` of the `Depos DAO` can be recapitalized by additional public or private sale of utility and governance `DPS` tokens. For every recapitalization a new `fundrasing contract` is published which accepts payments in exchange of `DPS` tokens according to the rules, terms and prices difened by this contract. That leads to the inclrease of the total supply of `DPS` tokens.
 - On the first stage governance and ownership belongs to the corresponding admin accounts. In future this functions will be passed to the decentralized governance for `DPS` holders to decide changes of the system.
-
-### `Capital` and `DPS`
-All system revenues/losses are absorbed by the `capital`, so that new stablecoins are either issued to the `capital` or are burnt from it depending on the case. `DPS` has `nominal price` which is simply a share of `capital` for one `DPS` token. `DPS` token can be used at nominal price for `[TODO: WHAT ARE THE UTILITY FUNCTIONS OF DPS WITH NOMINAL PRICE]`, though the `market price` of `DPS` is supposed to reflect all future dicounted cashflows (interest, market-making, future FX services etc.) and expected to be much higher than `nominal price`. In case system experiences lack of `capital` to absorb sudden loss and keep every stablecoin collateralized, new `DPS` tokens are issued and sold to the market to replenish the `capital`, given that in long-term system is proven to be profitable.
 
 
 
