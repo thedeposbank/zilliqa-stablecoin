@@ -36,7 +36,8 @@ The table below presents the mutable fields of the contract and their initial va
 |`oracle_approver`| `ByStr20` | `init_owner`  | Current `oracle_approver` of the contract.|
 |`param_changer`| `ByStr20` | `init_owner`  | Current `oracle_approver` of the contract.|
 |`ZIL_oracle`| `Bystr20` | `default oracle address` | Current `ZIL_oracle` of the contract. |
-|`coll_value`| `Uint128` | `Uint128 0 ` | Reflects current total collateral value. Is updated iteratively on every change of price or balance. `DUSD` supply supposed to be equal or close to that value, |
+|`coll_value`| `Uint128` | `Uint128 0 ` | Reflects current total collateral value. Is updated iteratively on every change of price or balance. `DUSD` supply supposed to be equal or close to that value. |
+
 
 #### Custom structures
 
@@ -64,12 +65,13 @@ All the transitions in the contract can be categorized into three categories:
 - _DPS token usage transitions_ that provide utility functions for DPS token
 - _supply adjustment related transitions_ which keep the number of stablecoins issued close to the present total value of collateral
 - _dBond tokens management related transitions_ which allow usage of tokenized bonds within the Depos DAO
+- _`ZIL` transfer transitions_ which allow to send `ZIL` to/from system with clear purpose
 
-Please note, that these are only direct-call transitions. All incoming transfer processing documentation is presented in next _Procedures_ block. 
+Please note, that these are only direct-call transitions. All incoming transfer processing documentation is presented in next _Procedures_ block.
 
 Each of these category of transitions are presented in further details below:
 
-#### HouseKeeping Transitions
+#### HouseKeeping transitions
 
 | Name | Params | Description |
 |--|--|--|
@@ -81,17 +83,21 @@ Each of these category of transitions are presented in further details below:
 |`updateGovContract`| `address : ByStr20` | Update decentralize governance contract.  <br> :warning: **Note:**   `_sender` must be the current `gov_contract` in the contract. |
 |`updateParamChanger`| `address : ByStr20` | Update address that can change parameters.  <br> :warning: **Note:**   `_sender` must be the current `owner` in the contract. |
 |`updateParams`| `Map String Uint128` | Set new parameters to the system.  <br> :warning: **Note:**   `_sender` must be the current `param_changer` in the contract. |
+|`TransferSuccess`| `sender : ByStr20, amount : Uint128, code : Uint32` | Every time the contract receives tokens this message is sent by token contract as an incoming transfer notification. Depending on the `_sender`, `sender` and `code` it calls different procedures to manage the transfer.
 
 #### DPS token usage transitions
-
-|`stakeDPS`| `amount : Uint128` | Lock `amount` number of `DPS` tokens. Tokens staked via this transition can only be used forissuing `DUSD`-nominated loan. Tokens are locked within `_sender` account so that he doesn't lose the possession of these tokens, but cannot move or use them until they are unstaked <br> :warning: **Note:**   `DPS` token can be also staked for governance functions, but it has nothing to do with this transition |
+ Name | Params | Description |
+|--|--|--|
+|`stakeDPS`| `amount : Uint128` | Lock `amount` number of `DPS` tokens. Tokens staked via this transition can only be used for issuing `DUSD`-nominated loan. Tokens are locked within `_sender` account so that he doesn't lose the possession of these tokens, but cannot move or use them until they are unstaked <br> :warning: **Note:**   `DPS` token can be also staked for governance functions, but it has nothing to do with this transition and contract |
 |`unstakeDPS`| `amount : Uint128` | Unlock `amount` number of previously staked `DPS` tokens |
 
 
 #### Supply adjustment related transitions
-
+ Name | Params | Description |
+|--|--|--|
 |`adjustDUSD`| `-` | This is public transition. Adjust current `DUSD` supply with respect to `valid_dBonds_info` map and `ZIL` balance, i.e. after this transition execution `DUSD` supply will be equal to the total value of underlying collateral - `coll_value`. It either mints new `DUSD` tokens to `capital` or burns them from it. |
-|`DBondPriceResponse`| `new_price : Uint128` | This transition is called by dBond token contract as price update notification, so that it updates price in `valid_dBonds_info` for a `key = _sender` if such key exists. |
+|`requestDBondPrice`| `dbond_address : ByStr20` | Sends request to the dBond token contract to update and send back the current internal price. Receives respond to `DBondPriceResponse` transition.|
+|`DBondPriceResponse`| `upd_price : Uint128` | This transition is called by dBond token contract as price update notification, so that it updates price in `valid_dBonds_info` for a `key = _sender` if such key exists. |
 |`ZilPriceResponse`| `new_price : Uint128` | This transition is called by `ZIL_oracle` as price change notification. |
 |`requestDBondBalance`| `dbond_address : ByStr20` | Sends request to the dBond token contract about system balance from the name of logic contract. Receives respond to `BalanceOfResponse` transition.|
 |`BalanceOfResponse`| `address : ByStr20, balance : Uint128` | This transition is called by dBond token contract as a respond to request of the system balance, so that it updates balance in `valid_dBonds_info` for a `key = _sender` if such key exists. |
@@ -99,8 +105,31 @@ Each of these category of transitions are presented in further details below:
 
 
 #### dBond tokens management transitions
-
+ Name | Params | Description |
+|--|--|--|
 |`approveDBond`| `dbond_address : ByStr20` | This transiton is called by `dBond_approver`. After the transition corresponding dBond tokens can be accepted by the system as the collateral for `DUSD` stablecoins. |
 |`claimDBondPayment`| `dbond_address : ByStr20` | This is public transition. If dBond has been already paid off, the contract as a dBond token holder can exchange dBond tokens for the payment via dbond payoff contract represented in `valid_dBonds_info` table.
 
+#### `ZIL` transfering transitions
+ Name | Params | Description |
+|--|--|--|
+|`GetDUSD`| `-` | This is public transition. When `_sender` calls this transition, he should set the servise variable `_amount` with the value of `ZIL` he wants to send in exchange of `DUSD`. This request is registered and in the next block (to avoid price oracle frontrunning) `DUSD` will be transfered according to the current `ZIL/USD` market rate. <br> :warning: **Note:** System can deny such a trade in case it is out of risk management boundaries or other internal reasons written in smart contract |
+|`ZILtoCapital`|`-`| This is public transition, it is used for fundrasing purposes and in case of sudden and emergance capital replenishment need. When `_sender` calls this transition, he should set the servise variable `_amount` with the value of `ZIL` he wants use to replenish `capital`. Transfered `ZIL` is accepted and new `DUSD` issued to `capital` according to the current `ZIL/USD` market rate. <br> :warning: **Note:** Call this transition with care. By calling this transition `_sender` loses the possession of the tokens and its value. |
+
 ### Procedures
+
+#### Transfer-related procedures
+Procedures are used to manage incoming transfers and invoke further transitions. Once system collateral balance changes it is reflected in `valid_dBonds_info` map. Note, `_sender` in all procedures is the token contract, while the `sender` is the one, who actually initiates the transfer.
+
+ Name | Params | Description |
+|--|--|--|
+|`onDBondForDUSD`| `sender : ByStr20, amount : Uint128, code : Uint32` | DBond can be transferred only to put it as collateral for new issued `DUSD`. If matches all conditions on incoming dBond, it is sent further to the system wallet. As a responce initiates mint of `DUSD` tokens with amount equal to the current price in `valid_dBonds_info` to the `sender`.  <br> :warning: **Note:** It is recommended for `sender` to call `requestDBondPrice` transition before transfering dBond to the system |
+|`onDUSDforDBond`| `sender : ByStr20, amount : Uint128, code : Uint32` | `DUSD` can be transferred in order to buy back the dBond from the systemat the current dBond internal price. That can only be done by the dBond contract owner. Accepted `DUSD` are burnt since underlying collateral is transfered out. <br> :warning: **Note:** It is recommended for `sender` to call `requestDBondPrice` transition before transfering `DUSD` to the system for this purpose. Also, system can deny such a trade in case it is out of risk management boundaries or other internal reasons written in smart contract. 
+|`onDUSDforZIL`| `sender : ByStr20, amount : Uint128, code : Uint32` | `DUSD` can be transferred to exchange it directly for `ZIL`, any `DUSD` holder can do that. This request is registered and in the next block (to avoid price oracle frontrunning) `ZIL` will be transfered according to the current `ZIL/USD` market rate. <br> :warning: **Note:** System can deny such a trade in case it is out of risk management boundaries or other internal reasons written in smart contract.  |
+
+#### Risk management related procedures
+ Name | Params | Description |
+|--|--|--|
+|`checkTrade`|`usd_value : Uint128, side : Uint32`| This procedure checks that current `DUSD-ZIL` exchange (or vise-versa) is valid in terms of volume and other factors. |
+|`checkState`|`-`| After all calculations and changes for the current exchange is made, this procedure checks that final state of the system is correct. That is, there are some demands on the system characteristics, like relative size of `capital` or relative value of stored `ZIL` etc.
+|`moveParams`| Some of the parameters from the `sys_params` are subject of internal management. That is, if system state changes it may cause change of some parameters(ex. fees).
