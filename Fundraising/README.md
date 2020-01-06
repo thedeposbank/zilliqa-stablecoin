@@ -9,6 +9,7 @@ This contract is used to collect system coins in exchange for DPS tokens.
 | `init_owner`      | Initial owner of the contract. Most other roles are initialised with this value |
 | `owner`           | Current owner, initialised with `init_owner`. Admin account, has permission for critical actions like changing other roles executors |
 | `pauser`          | Can pause/unpause contract |
+| `dev_fund`        | Development fund address. When fundraising round is over, part of collected ZIL tokens is transferred to this address. |
 |`approvedSpender`  | A token holder can designate a certain address to send up to a certain number of tokens on its behalf. These addresses will be called `approvedSpender`.  |
 
 ### Immutable fields
@@ -41,3 +42,25 @@ The table below presents the mutable fields of the contract and their initial va
 | Name | Type | Initial Value |Description |
 |--|--|--|--|
 |`whitelist`          | `Map ByStr20 Uint128` | Empty | If fundraising is not public, only address from this map are allowed to do exchange transfers. |
+
+### Transitions
+
+| Name | Params | Description | Callable when paused? |
+|--|--|--|--|
+|`Swap`|        | Swap `_amount` of ZIL to appropriate amount of DPS. `_sender` must be in `whitelist` map. | :x: |
+|`GetFunds`| `to : ByStr20` | Transfer all collected funds to given address. `_sender` must be `owner` | :heavy_check_mark: |
+
+
+#### Housekeeping Transitions
+
+| Name | Params | Description | Callable when paused? |
+|--|--|--|--|
+|`Whitelist`| `address : ByStr20` | Add `address` to whitelist. `_sender` must be `owner`. | :heavy_check_mark: |
+|`UnWhitelist`| `address : ByStr20` | Remove `address` from whitelist. `_sender` must be `owner`. | :heavy_check_mark: |
+
+#### Pause-related Transitions
+
+| Name | Params | Description | Callable when paused? |
+|--|--|--|--|
+|`pause`|  | Pause the contract to temporarily stop all transfer of tokens and other operations. Only the current `pauser` can invoke this transition.  <br>  :warning: **Note:** `initiator` must be the current `pauser` in the contract.  | :heavy_check_mark: |
+|`unpause`|  | Unpause the contract to re-allow all transfer of tokens and other operations. Only the current `pauser` can invoke this transition.  <br>  :warning: **Note:** `initiator` must be the current `pauser` in the contract.  | :heavy_check_mark: |
