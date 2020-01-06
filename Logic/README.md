@@ -132,4 +132,4 @@ Procedures are used to manage incoming transfers and invoke further transitions.
 |--|--|--|
 |`checkTrade`|`usd_value : Uint128, side : Uint32`| This procedure checks that current `DUSD-ZIL` exchange (or vise-versa) is valid in terms of volume and other factors. |
 |`checkState`|`-`| After all calculations and changes for the current exchange is made, this procedure checks that final state of the system is correct. That is, there are some demands on the system characteristics, like relative size of `capital` or relative value of stored `ZIL` etc.
-|`moveParams`| Some of the parameters from the `sys_params` are subject of internal management. That is, if system state changes it may cause change of some parameters(ex. fees).
+|`moveParams`| `-` |Some of the parameters from the `sys_params` are subject of internal management. That is, if system state changes it may cause change of some parameters(ex. fees).
