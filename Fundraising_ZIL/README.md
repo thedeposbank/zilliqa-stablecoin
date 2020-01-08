@@ -55,19 +55,19 @@ The table below presents the mutable fields of the contract and their initial va
 
 | Name | Params | Description | Callable when paused? |
 |--|--|--|--|
-|`Swap`|        | Swap `_amount` of ZIL to appropriate amount of DPS. `_sender` must be in `whitelist` map. | :x: |
-|`Withdraw`| `to : ByStr20` | Transfer all collected funds to given address. `_sender` must be `withdrawer`. When fundraising contract is deployed, there is no known target address for collected funds, so we need this transition to manually point the target address. | :heavy_check_mark: |
-|`GetDevFund`|  | Transfer dev share of DPS to `dev_fund` | :heavy_check_mark: |
+|`swap`|        | Swap `_amount` of ZIL to appropriate amount of DPS. `_sender` must be in `whitelist` map. | :x: |
+|`withdraw`| `to : ByStr20` | Transfer all collected funds to given address. `_sender` must be `withdrawer`. When fundraising contract is deployed, there is no known target address for collected funds, so we need this transition to manually point the target address. | :heavy_check_mark: |
+|`getDevFund`|  | Transfer dev share of DPS to `dev_fund` | :heavy_check_mark: |
 
 #### Housekeeping Transitions
 
 | Name | Params | Description | Callable when paused? |
 |--|--|--|--|
-|`Whitelist`| `address : ByStr20` | Add `address` to whitelist. `_sender` must be `owner`. | :heavy_check_mark: |
-|`UnWhitelist`| `address : ByStr20` | Remove `address` from whitelist. `_sender` must be `owner`. | :heavy_check_mark: |
+|`whitelist`| `address : ByStr20` | Add `address` to whitelist. `_sender` must be `owner`. | :heavy_check_mark: |
+|`unWhitelist`| `address : ByStr20` | Remove `address` from whitelist. `_sender` must be `owner`. | :heavy_check_mark: |
 |`transferOwnership`|`newOwner : ByStr20`|Allows the current `owner` to transfer control of the contract to a `newOwner`. <br>  :warning: **Note:** `_sender` must be the current `owner` in the contract.  | :heavy_check_mark: |
 |`updatePauser`| `newPauser : ByStr20` |  Replace the current `pauser` with the `newPauser`.  <br>  :warning: **Note:** `_sender` must be the current `owner` in the contract. | :heavy_check_mark: |
-|`updateWithdrawer`| `newWithdrawer : ByStr20` | Replace the current `withdrawer` with the `newWithdrawer`. <br>  :warning: **Note:** `_sender` must be the current `withdrawer` in the contract. | :heavy_check_mark: |
+|`updateWithdrawer`| `to : ByStr20` | Replace the current `withdrawer` with the `newWithdrawer`. <br>  :warning: **Note:** `_sender` must be the current `withdrawer` in the contract. | :heavy_check_mark: |
 
 #### Pause-related Transitions
 

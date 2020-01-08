@@ -15,7 +15,14 @@ The source code is taken mostly from `wallet_2.scilla` of test contracts in scil
 
 | Name | Type | Description |
 |--|--|--|
-| `Transaction` | `ByStr20 Uint128 String` | Describes a withdrawal transaction to some `address` of some `amount` and optionally with some `tag`. |
+| `Transaction` | `ByStr20 ByStr20 Uint128 String` | Describes a withdrawal transaction: call transition of a contract at some `address1`, passing `address2` as a `to` parameter, sending `amount` and optionally with some `tag`. |
+
+### Message types to send to fundraising contract
+
+| Tag | Params | Description |
+|--|--|--|
+| `withdraw` | `to : ByStr20` | Withdraw funds to specified address. |
+| `updateWithdrawer` | `to : ByStr20` | Set new withdrawer address. |
 
 ### Immutable fields
 
