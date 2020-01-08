@@ -57,14 +57,14 @@ of the value it is mapped to. |
 
 | Name | Params | Description | Callable when paused? |
 |--|--|--|--|
-|`pause`|  | Pause the contract to temporarily stop all transfer of tokens and other operations. Only the current `pauser` can invoke this transition.  <br>  :warning: **Note:** `initiator` must be the current `pauser` in the contract.  | :heavy_check_mark: |
-|`unpause`|  | Unpause the contract to re-allow all transfer of tokens and other operations. Only the current `pauser` can invoke this transition.  <br>  :warning: **Note:** `initiator` must be the current `pauser` in the contract.  | :heavy_check_mark: |
+|`pause`|  | Pause the contract to temporarily stop all transfer of tokens and other operations. Only the current `pauser` can invoke this transition.  <br>  :warning: **Note:** `_sender` must be the current `pauser` in the contract.  | :heavy_check_mark: |
+|`unpause`|  | Unpause the contract to re-allow all transfer of tokens and other operations. Only the current `pauser` can invoke this transition.  <br>  :warning: **Note:** `_sender` must be the current `pauser` in the contract.  | :heavy_check_mark: |
 
 #### Token Transitions
 
 | Name | Params | Description | Callable when paused? |
 |--|--|--|--|
-|`BalanceOf`| `tokenOwner : ByStr20` | Transition to learn balance of some token owner. Sends back message `BalanceOfResponse` with fields `address` and `balance`. |
+|`BalanceOf`| `tokenOwner : ByStr20` | Transition to learn balance of some token owner. Sends back message `BalanceOfResponse` with fields `address` and `balance`. | :heavy_check_mark: |
 |`Approve`| `spender : ByStr20, value : Uint128` | Approve a `spender` to spend on behalf of a token holder (`_sender`) upto the `value` amount. <br> `spender` and `_sender` must not be blacklisted. | :x:  |
 |`Transfer`| `to : ByStr20, value : Uint128, code : Uint32` | Transfer `value` number of tokens from the `_sender` to the `to` address.  <br>  `_sender` and `to` addresses must not be blacklisted.| :x: |
 |`TransferFrom`| `from : ByStr20, to : ByStr20, value : Uint128, code : Uint32` | Transfer `value` number of tokens on behalf of the `from` to the `to` address.  <br>  `_sender`, `from`, `to` addresses must not be blacklisted.| :x:  |
@@ -73,5 +73,5 @@ of the value it is mapped to. |
 
 | Name | Params | Description | Callable when paused? |
 |--|--|--|--|
-|`mint`| `to: ByStr20, value : Uint128, initiator : ByStr20` | Mint `value` number of new tokens and allocate them to the `to` address.  <br>  Needs `owner` auth. Minting can only be done when the contract is not paused. | <center>:x:</center> |
-|`burn`| `value : Uint128, initiator : ByStr20` | Burn `value` number of tokens.  <br>  :warning: **Note:**   1) Only the non-blacklisted minters can invoke this transition, i.e., `initiator` must be a non-blacklisted `minter`. 2) Burning can only be done when the contract is not paused.| <center>:x:</center>  |
+|`mint`| `to: ByStr20, value : Uint128` | Mint `value` number of new tokens and allocate them to the `to` address.  <br>  Needs `owner` auth. Minting can only be done when the contract is not paused. | <center>:x:</center> |
+|`burn`| `from: ByStr20, value : Uint128` | Burn `value` number of tokens on address `from`.  <br>  :warning: **Note:**   1) Only the non-blacklisted minters can invoke this transition. 2) Burning can only be done when the contract is not paused.| <center>:x:</center>  |
