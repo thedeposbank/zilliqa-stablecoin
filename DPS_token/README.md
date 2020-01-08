@@ -8,7 +8,7 @@
 | `owner`           | Current owner, initialised with `init_owner`. Admin account, has permission for critical actions like changing other roles executors |
 | `pauser`          | Can pause/unpause contract |
 | `approvedSpender` | A token holder can designate a certain address to send up to a certain number of tokens on its behalf. These addresses will be called `approvedSpender`.  |
-| `fundraisingManager` | Person/contract, permitted to change `fundraising` field |
+| `fundraisingManager` | Address allowed to change `fund_con` field |
 
 ### Immutable fields
 
@@ -30,7 +30,7 @@ The table below presents the mutable fields of the contract and their initial va
 |--|--|--|--|
 |`owner`        | `ByStr20` | `init_owner`  | Current `owner` of the contract. |
 |`pauser`       | `ByStr20` | `init_owner`  | Current `pauser` in the contract. |
-|`fundraising`  | `ByStr20` | 0             | Current address of fundraising contract.|
+|`fund_con`  |`Oprional ByStr20`| `None`    | Current address of fundraising contract if fundrasing is active.|
 |`paused`       | `Bool`    | `False`       | Keeps track of whether the contract is current paused or not. `True` means the contract is paused. |
 |`totalSupply`  | `Uint128` | `0`           | The total number of tokens that is in the supply. |
 
