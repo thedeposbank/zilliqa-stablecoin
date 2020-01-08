@@ -14,7 +14,7 @@ This contract represents standard token contract with extention for minting/burn
 |`approvedSpender`  | A token holder can designate a certain address to send up to a certain number of tokens on its behalf. These addresses will be called `approvedSpender`  |
 | `contractApprover` | A role which can designate a certain address to mint/burn stablecoins. Only smart contracts will be approved |
 |`approvedContract` | An internal smart contract representing Depos logic module which has rights to mint/burn tokens |
-|`gov_contract`| A contract which can change `owner` and its own value. Is independent from `owner` and provides security if `owner` misbehave (ex. can dismiss `owner`, upload and approve new contract for logic implementation). |
+|`gov_contract`| An address which can change `owner` and its own value. Is independent from `owner` and provides security if `owner` misbehave (ex. can dismiss `owner`, upload and approve new contract for logic implementation). |
 
 ### Immutable fields
 
@@ -67,7 +67,7 @@ Each of these category of transitions are presented in further details below:
 
 | Name | Params | Description | Callable when paused? |
 |--|--|--|--|
-|`transferOwnership`|`newOwner : ByStr20`|Allows the current `owner` to transfer control of the contract to a `newOwner`. <br>  :warning: **Note:** `_sender` must be the current `owner` in the contract.  | :heavy_check_mark: |
+|`transferOwnership`|`newOwner : ByStr20`|Allows the current `owner` or `gov_contract` to transfer control of the contract to a `newOwner`. <br>  :warning: **Note:** `_sender` must be the current `owner` or `gov_contract` in the contract.  | :heavy_check_mark: |
 |`updatePauser`| `newPauser : ByStr20` |  Replace the current `pauser` with the `newPauser`.  <br>  :warning: **Note:** `_sender` must be the current `owner` in the contract. | :heavy_check_mark: |
 |`blacklist`|`address : ByStr20`| Blacklist a given address. A blacklisted address can neither send or receive tokens. A `minter` can also be blacklisted. <br> :warning: **Note:**   `_sender` must be the current `blacklister` in the contract.| :heavy_check_mark: |
 |`unBlacklist`|`address : ByStr20`| Remove a given address from the blacklist.  <br> :warning: **Note:** `_sender` must be the current `blacklister` in the contract.| :heavy_check_mark: |
