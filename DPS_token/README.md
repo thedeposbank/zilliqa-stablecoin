@@ -9,6 +9,8 @@
 | `pauser`          | Can pause/unpause contract |
 | `approvedSpender` | A token holder can designate a certain address to send up to a certain number of tokens on its behalf. These addresses will be called `approvedSpender`.  |
 | `fundraisingManager` | Address allowed to change `fund_con` field |
+| `contractApprover` | A role which can designate a certain address to mint/burn stablecoins. Only smart contracts will be approved |
+|`approvedContract` | An internal smart contract representing Depos logic module which has rights to mint/burn tokens |
 
 ### Immutable fields
 
@@ -30,6 +32,7 @@ The table below presents the mutable fields of the contract and their initial va
 |--|--|--|--|
 |`owner`        | `ByStr20` | `init_owner`  | Current `owner` of the contract. |
 |`pauser`       | `ByStr20` | `init_owner`  | Current `pauser` in the contract. |
+|`contractApprover`| `ByStr20` | `init_owner`  | Current `contractApprover` in the contract.|
 |`fund_con`  |`Oprional ByStr20`| `None`    | Current address of fundraising contract if fundrasing is active.|
 |`paused`       | `Bool`    | `False`       | Keeps track of whether the contract is current paused or not. `True` means the contract is paused. |
 |`totalSupply`  | `Uint128` | `0`           | The total number of tokens that is in the supply. |
@@ -41,6 +44,7 @@ The table below presents the mutable fields of the contract and their initial va
 of the value it is mapped to. |
 |`balances`             | `Map ByStr20 Uint128` | Empty | Keeps track of the number of tokens that each token holder owns. |
 |`allowed`              | `Map ByStr20 (Map ByStr20 Uint128)` | Empty | Keeps track of the `approvedSpender` for each token holder and the number of tokens that she is allowed to spend on behalf of the token holder. |
+|`approvedContracts`    | `Map ByStr20 Uint128` | Empty | Records internal approved smart contracts. |
 
 ### Transitions
 
@@ -52,6 +56,9 @@ of the value it is mapped to. |
 |`updatePauser`| `newPauser : ByStr20` |  Replace the current `pauser` with the `newPauser`.  <br>  :warning: **Note:** `_sender` must be the current `owner` in the contract. | :heavy_check_mark: |
 |`updateFundraisingManager`| `newFundraisingManager : ByStr20` | Replace the current `fundraisingManager` with the `newFundraisingManager`.  <br>  :warning: **Note:** `_sender` must be the current `owner` in the contract. | :heavy_check_mark: |
 |`connectFundraisingContract`|`address : ByStr20`| Set new address of fundraising contract. `_sender` must be the current `fundraisingManager`.| :heavy_check_mark: |
+|`updateContractApprover`|`newContractApprover : ByStr20`| Replace the current `contractApprover` with the `newContractApprover`.  <br> :warning: **Note:**  `_sender` must be the current `owner` in the contract.| :heavy_check_mark: |
+|`approveContract`|`address : ByStr20`| Approve contract address. An approved address can mint/burn tokens (burn only from `capital`). dBond tokens as collateral. <br> :warning: **Note:**   `_sender` must be the current `contractApprover` in the contract.| :heavy_check_mark: |
+|`revokeContract`|`address : ByStr20`| Revoke previously approved contract address | :heavy_check_mark: |
 
 #### Pause-related Transitions
 
@@ -73,5 +80,5 @@ of the value it is mapped to. |
 
 | Name | Params | Description | Callable when paused? |
 |--|--|--|--|
-|`mint`| `to: ByStr20, value : Uint128` | Mint `value` number of new tokens and allocate them to the `to` address.  <br>  Needs `owner` auth. Minting can only be done when the contract is not paused. | <center>:x:</center> |
-|`burn`| `from: ByStr20, value : Uint128` | Burn `value` number of tokens on address `from`.  <br>  :warning: **Note:**   1) Only the non-blacklisted minters can invoke this transition. 2) Burning can only be done when the contract is not paused.| <center>:x:</center>  |
+|`mint`| `to: ByStr20, value : Uint128` | Mint `value` number of new tokens and allocate them to the `to` address.  <br>  `_sender` must be in `approvedContracts`. Minting can only be done when the contract is not paused. | <center>:x:</center> |
+|`burn`| `from: ByStr20, value : Uint128` | Burn `value` number of tokens on address `from`.  <br> `_sender` must be in `approvedContracts`. | <center>:x:</center>  |

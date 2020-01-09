@@ -55,7 +55,7 @@ The table below presents the mutable fields of the contract and their initial va
 
 ### Transitions
 
-All the transitions in the contract can be categorized into three categories:
+All the transitions in the contract can be categorized into four categories:
 - _housekeeping transitions_ meant to facilitate basic admin realted tasks.
 - _pause_ transitions to pause and pause the contract.
 - _minting-related transitions_ that allows mining and burning of tokens.
@@ -73,7 +73,7 @@ Each of these category of transitions are presented in further details below:
 |`unBlacklist`|`address : ByStr20`| Remove a given address from the blacklist.  <br> :warning: **Note:** `_sender` must be the current `blacklister` in the contract.| :heavy_check_mark: |
 |`updateBlacklister`|`newBlacklister : ByStr20`| Replace the current `blacklister` with the `newBlacklister`.  <br> :warning: **Note:**  `_sender` must be the current `owner` in the contract.| :heavy_check_mark: |
 |`updateContractApprover`|`newContractApprover : ByStr20`| Replace the current `contractApprover` with the `newContractApprover`.  <br> :warning: **Note:**  `_sender` must be the current `owner` in the contract.| :heavy_check_mark: |
-|`approveContract`|`address : ByStr20`| Approve contract address. An approved address can mint/burn tokens (burn only from `capital`). dBond tokens as collateral. <br> :warning: **Note:**   `_sender` must be the current `contractApprover` in the contract.| :heavy_check_mark: |
+|`approveContract`|`address : ByStr20`| Approve contract address. An approved address can mint/burn tokens. <br> :warning: **Note:**   `_sender` must be the current `contractApprover` in the contract.| :heavy_check_mark: |
 |`revokeContract`|`address : ByStr20`| Revoke previously approved contract address | :heavy_check_mark: |
 |`transferGovernance`|`new_gov : ByStr20`|Allows the current `gov_contract` to change its value to a `new_gov`. <br>  :warning: **Note:** `_sender` must be the current `gov_contract` in the contract.  | :heavy_check_mark: |
 

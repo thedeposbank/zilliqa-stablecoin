@@ -1,6 +1,6 @@
 # Multisig withdrawer contract documentation
 
-This contract is used to implement `withdrawer` role of Fundraising contract.
+This contract implements `withdrawer` role of Fundraising contract, but also may be used as unified multisig instrument to call arbitrary contract transitions with single `ByStr20` parameter.
 The source code is taken mostly from `wallet_2.scilla` of test contracts in scilla repository.
 
 ### Roles and privileges
@@ -15,7 +15,7 @@ The source code is taken mostly from `wallet_2.scilla` of test contracts in scil
 
 | Name | Type | Description |
 |--|--|--|
-| `Transaction` | `ByStr20 ByStr20 Uint128 String` | Describes a withdrawal transaction: call transition of a contract at some `address1`, passing `address2` as a `to` parameter, sending `amount` and optionally with some `tag`. |
+| `Transaction` | `ByStr20 ByStr20 Uint128 String` | Describes a withdrawal transaction: call transition of a contract at some `address1`, passing `address2` as a `to` parameter, sending `amount` with some `tag`. |
 
 ### Message types to send to fundraising contract
 
