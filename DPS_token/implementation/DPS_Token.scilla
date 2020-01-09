@@ -9,6 +9,8 @@ library DPS_Token
 
 let one = Uint128 1
 let zero = Uint128 0
+let t = True
+let f = False
 
 let min_int =
   fun (a : Uint128) => fun (b : Uint128) =>
@@ -197,3 +199,112 @@ transition Allowance (tokenOwner : ByStr20, spender : ByStr20)
       send msgs
   end
 end
+
+transition transferOwnership(newOwner : ByStr20)
+  ow <- owner;
+  valid_auth = builtin eq _sender ow;
+  match valid_auth with
+  | True =>
+    owner := newOwner
+  | False => 
+    e = { _exception : "SenderNotAuthorized" };
+    throw e
+  end
+end
+
+transition updatePauser(newPauser : ByStr20)
+  ow <- owner;
+  valid_auth = builtin eq _sender ow;
+  match valid_auth with
+  | True =>
+    pauser := newPauser
+  | False => 
+    e = { _exception : "SenderNotAuthorized" };
+    throw e
+  end
+end
+
+transition updateFundraisingManager(newFundraisingManager : ByStr20)
+  ow <- owner;
+  valid_auth = builtin eq _sender ow;
+  match valid_auth with
+  | True =>
+    fundraisingManager := newFundraisingManager
+  | False => 
+    e = { _exception : "SenderNotAuthorized" };
+    throw e
+  end
+end
+
+transition connectFundraisingContract(address : ByStr20)
+  mgr <- fundraisingManager;
+  valid_auth = builtin eq _sender mgr;
+  match valid_auth with
+  | True =>
+    fundrContract := address
+  | False => 
+    e = { _exception : "SenderNotAuthorized" };
+    throw e
+  end
+end
+
+transition updateContractApprover(newContractApprover : ByStr20)
+  ow <- owner;
+  valid_auth = builtin eq _sender ow;
+  match valid_auth with
+  | True =>
+    contractApprover := newContractApprover
+  | False => 
+    e = { _exception : "SenderNotAuthorized" };
+    throw e
+  end
+end
+
+transition approveContract(address : ByStr20)
+  apprvr <- contractApprover;
+  valid_auth = builtin eq _sender apprvr;
+  match valid_auth with
+  | True =>
+    approvedContracts[address] := t
+  | False =>
+    e = { _exception : "SenderNotAuthorized" };
+    throw e
+  end
+end
+
+transition revokeContract(address : ByStr20)
+  apprvr <- contractApprover;
+  valid_auth = builtin eq _sender apprvr;
+  match valid_auth with
+  | True =>
+    delete approvedContracts[address]
+  | False =>
+    e = { _exception : "SenderNotAuthorized" };
+    throw e
+  end
+end
+
+transition pause()
+  psr <- pauser;
+  valid_auth = builtin eq _sender psr;
+  match valid_auth with
+  | True =>
+    pause := t
+  | False => 
+    e = { _exception : "SenderNotAuthorized" };
+    throw e
+  end
+end
+
+transition unpause()
+  psr <- pauser;
+  valid_auth = builtin eq _sender psr;
+  match valid_auth with
+  | True =>
+    pause := f
+  | False => 
+    e = { _exception : "SenderNotAuthorized" };
+    throw e
+  end
+end
+
