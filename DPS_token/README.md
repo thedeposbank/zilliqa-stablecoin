@@ -41,7 +41,6 @@ The table below presents the mutable fields of the contract and their initial va
 
 | Name | Type | Initial Value |Description |
 |--|--|--|--|
-of the value it is mapped to. |
 |`balances`             | `Map ByStr20 Uint128` | Empty | Keeps track of the number of tokens that each token holder owns. |
 |`allowed`              | `Map ByStr20 (Map ByStr20 Uint128)` | Empty | Keeps track of the `approvedSpender` for each token holder and the number of tokens that she is allowed to spend on behalf of the token holder. |
 | `approvedContracts` | `Map ByStr20 Uint128` | Empty | Each key in this map represetns approved address no matter what value it is mapped to. |
