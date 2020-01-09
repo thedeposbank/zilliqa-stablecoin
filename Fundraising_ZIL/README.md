@@ -43,7 +43,8 @@ The table below presents the mutable fields of the contract and their initial va
 |`pauser`       | `ByStr20` | `init_owner`  | Current `pauser` in the contract. |
 |`withdrawer`   | `ByStr20` | `init_withdrawer` | Current `withdrawer` in the contract. |
 |`paused`       | `Bool`    | `False`       | Keeps track of whether the contract is current paused or not. `True` means the contract is paused. |
-|`dps_sold`     | `Uint128` | 0             | Amount of DPS sold by the moment. |
+|`dps_sold`     | `Uint128` | `Uint128 0`  | Amount of DPS sold by the moment. |
+|`transferred_to_dev`| `Uint128` | `Uint128 0` | Amount already transferred to `dev_fund` |
 
 #### Maps
 
