@@ -32,9 +32,9 @@ The table below presents the mutable fields of the contract and their initial va
 |--|--|--|--|
 |`owner`        | `ByStr20` | `init_owner`  | Current `owner` in the contract. |
 |`pauser`       | `ByStr20` | `init_owner`  | Current `pauser` in the contract. |
+|`contractApprover` | `ByStr20` | `init_owner` | Current `contractApprover` in the contract |
 |`fundrContract`  |`Optional ByStr20`| `None`    | Current address of fundraising contract if fundraising is active.|
 |`paused`       | `Bool`    | `False`       | Keeps track of whether the contract is current paused or not. `True` means the contract is paused. |
-| `contractApprover` | `ByStr20` | `init_owner` | Current `cotractApprover` in the contract |
 |`totalSupply`  | `Uint128` | `0`           | The total number of tokens that is in the supply. |
 
 #### Maps
