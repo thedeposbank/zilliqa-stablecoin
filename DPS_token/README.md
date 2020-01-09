@@ -80,5 +80,5 @@ of the value it is mapped to. |
 
 | Name | Params | Description | Callable when paused? |
 |--|--|--|--|
-|`mint`| `to: ByStr20, value : Uint128` | Mint `value` number of new tokens and allocate them to the `to` address.  <br>  `sender` must be an `approvedContract`. Minting can only be done when the contract is not paused. | <center>:x:</center> |
+|`mint`| `to: ByStr20, value : Uint128` | Mint `value` number of new tokens and allocate them to the `to` address.  <br>  :warning: **Note:** `sender` must be an `approvedContract`. Minting can only be done when the contract is not paused. | <center>:x:</center> |
 |`burn`| `from: ByStr20, value : Uint128` | Burn `value` number of tokens on address `from`.  <br>  :warning: **Note:**   1) `_sender` must be an aproved contract 2) Burning can only be done when the contract is not paused.| <center>:x:</center>  |
