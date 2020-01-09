@@ -32,9 +32,9 @@ The table below presents the mutable fields of the contract and their initial va
 |--|--|--|--|
 |`owner`        | `ByStr20` | `init_owner`  | Current `owner` in the contract. |
 |`pauser`       | `ByStr20` | `init_owner`  | Current `pauser` in the contract. |
+|`contractApprover`| `ByStr20` | `init_owner`  | Current `contractApprover` in the contract.|
 |`fund_con`  |`Oprional ByStr20`| `None`    | Current address of fundraising contract if fundrasing is active.|
 |`paused`       | `Bool`    | `False`       | Keeps track of whether the contract is current paused or not. `True` means the contract is paused. |
-| `contractApprover` | `ByStr20` | `init_owner` | Current `cotractApprover` in the contract |
 |`totalSupply`  | `Uint128` | `0`           | The total number of tokens that is in the supply. |
 
 #### Maps
@@ -44,7 +44,7 @@ The table below presents the mutable fields of the contract and their initial va
 of the value it is mapped to. |
 |`balances`             | `Map ByStr20 Uint128` | Empty | Keeps track of the number of tokens that each token holder owns. |
 |`allowed`              | `Map ByStr20 (Map ByStr20 Uint128)` | Empty | Keeps track of the `approvedSpender` for each token holder and the number of tokens that she is allowed to spend on behalf of the token holder. |
-| `approvedContracts` | `Map ByStr20 Uint128` | Empty | Each key in this map represetns approved address no matter what value it is mapped to. |
+| `approvedContracts` | `Map ByStr20 Bool` | Empty | Each key in this map represetns approved address no matter what value it is mapped to. |
 
 ### Transitions
 
@@ -58,7 +58,7 @@ of the value it is mapped to. |
 |`connectFundraisingContract`|`address : ByStr20`| Set new address of fundraising contract. <br>  :warning: **Note:** `_sender` must be the current `fundraisingManager`.| :heavy_check_mark: |
 |`updateContractApprover`| `newContractApprover : ByStr20` | Set new `contractApprover` with `newContractApprover` value.
 |`approveContract`| `address : ByStr20` | Approve `address` for minting/burning of tokens. |
-|`revokeontract`| `address : ByStr20` | Revoke previously approved `address` |
+|`revokeContract`| `address : ByStr20` | Revoke previously approved `address` |
 
 #### Pause-related Transitions
 
