@@ -55,9 +55,9 @@ The table below presents the mutable fields of the contract and their initial va
 
 | Name | Params | Description | Callable when paused? |
 |--|--|--|--|
-|`swap`|        | Swap `_amount` of ZIL to appropriate amount of DPS. `_sender` must be in `whitelist` map. | :x: |
+|`buyDPS`|        | Swap `_amount` of ZIL to appropriate amount of DPS. `_sender` must be in `whitelist` map. | :x: |
 |`withdraw`| `to : ByStr20` | Transfer all collected funds to given address. `_sender` must be `withdrawer`. When fundraising contract is deployed, there is no known target address for collected funds, so we need this transition to manually point the target address. | :heavy_check_mark: |
-|`getDevFund`|  | Transfer dev share of DPS to `dev_fund` | :heavy_check_mark: |
+|`transferToDev`|  | Transfer dev share of DPS to `dev_fund` | :heavy_check_mark: |
 
 #### Housekeeping Transitions
 
