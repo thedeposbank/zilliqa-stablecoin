@@ -32,6 +32,7 @@ The table below presents the mutable fields of the contract and their initial va
 |--|--|--|--|
 |`owner`        | `ByStr20` | `init_owner`  | Current `owner` in the contract. |
 |`pauser`       | `ByStr20` | `init_owner`  | Current `pauser` in the contract. |
+|`fundraisingManager` | `ByStr20` | `init_owner` | Address allowed to change `fund_con` field |
 |`fund_con`  |`Oprional ByStr20`| `None`    | Current address of fundraising contract if fundrasing is active.|
 |`paused`       | `Bool`    | `False`       | Keeps track of whether the contract is current paused or not. `True` means the contract is paused. |
 | `contractApprover` | `ByStr20` | `init_owner` | Current `cotractApprover` in the contract |

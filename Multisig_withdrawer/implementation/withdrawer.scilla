@@ -5,11 +5,7 @@ import ListUtils IntUtils BoolUtils
 (***************************************************)
 (*               Associated library                *)
 (***************************************************)
-library WalletLib
-
-(* Event emitted when the contract is initialized *)
-let mk_contract_initialized_event =
-  { _eventname : "Contract initialized" }
+library Withdrawer
 
 (* Event for communicating a new transaction id *)
 let mk_transaction_added_event =
@@ -137,7 +133,7 @@ let transaction_msg_as_list =
 (* the transaction is executed.                    *)
 (*                                                 *)
 (***************************************************)
-contract Wallet
+contract Withdrawer
 (
 owners_list         : List ByStr20,
 required_signatures : Uint32
@@ -232,7 +228,7 @@ transition SubmitTransaction (wallet_contract : ByStr20, recipient : ByStr20, am
     (* Update transaction count *)
     transactionCount := tc_new;
     (* Create event with transaction Id *)
-    e = mk_transaction_added_event tc recipient amount tag;
+    e = mk_transaction_added_event tc wallet_contract recipient amount tag;
     event e
   end
 end
