@@ -54,7 +54,7 @@ The table below presents the mutable fields of the contract and their initial va
 
 #### Fundrasing Transitions
 | Name | Params | Description |
-|--|--|--|--|
+|--|--|--|
 |`buyDPS`| `-` | Swap `_amount` of ZIL to appropriate amount of DPS. `_sender` must be in `whitelist` map. |
 |`withdraw`| `to : ByStr20` | Transfer all collected funds to given address. `_sender` must be `withdrawer`. When fundraising contract is deployed, there is no known target address for collected funds, so we need this transition to manually point the target address. |
 |`transferToDev`| `-` | Transfer dev share of DPS to `dev_fund` |
@@ -62,7 +62,7 @@ The table below presents the mutable fields of the contract and their initial va
 #### Housekeeping Transitions
 
 | Name | Params | Description |
-|--|--|--|--|
+|--|--|--|
 |`whitelist`| `address : ByStr20` | Add `address` to whitelist. `_sender` must be `owner`. |
 |`unWhitelist`| `address : ByStr20` | Remove `address` from whitelist. `_sender` must be `owner`. |
 |`transferOwnership`|`newOwner : ByStr20`|Allows the current `owner` to transfer control of the contract to a `newOwner`. <br>  :warning: **Note:** `_sender` must be the current `owner` in the contract.  |
