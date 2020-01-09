@@ -10,7 +10,6 @@ After fundraising, contract owner burns rest of DPS tokens.
 |--|--|
 | `init_owner`      | Initial owner of the contract. Most other roles are initialised with this value |
 | `owner`           | Current owner, initialised with `init_owner`. Admin account, has permission for critical actions like changing other roles executors |
-| `pauser`          | Can pause/unpause contract. May be useful in emergency cases, like admin keys leakage etc. |
 | `dev_fund`        | Development fund address. For each sold DPS token, `dev_ratio` DPS tokens are sent to `dev_fund`. |
 | `withdrawer`      | Contract/person allowed to withdraw funds and, optionally, pass this allowance to another address. |
 
@@ -40,7 +39,6 @@ The table below presents the mutable fields of the contract and their initial va
 | Name | Type | Initial Value |Description |
 |--|--|--|--|
 |`owner`        | `ByStr20` | `init_owner`  | Current `owner` of the contract. |
-|`pauser`       | `ByStr20` | `init_owner`  | Current `pauser` in the contract. |
 |`withdrawer`   | `ByStr20` | `init_withdrawer` | Current `withdrawer` in the contract. |
 |`paused`       | `Bool`    | `False`       | Keeps track of whether the contract is current paused or not. `True` means the contract is paused. |
 |`dps_sold`     | `Uint128` | `Uint128 0`  | Amount of DPS sold by the moment. |
@@ -54,25 +52,18 @@ The table below presents the mutable fields of the contract and their initial va
 
 ### Transitions
 
-| Name | Params | Description | Callable when paused? |
+#### Fundrasing Transitions
+| Name | Params | Description |
 |--|--|--|--|
 |`buyDPS`|        | Swap `_amount` of ZIL to appropriate amount of DPS. `_sender` must be in `whitelist` map. | :x: |
 |`withdraw`| `to : ByStr20` | Transfer all collected funds to given address. `_sender` must be `withdrawer`. When fundraising contract is deployed, there is no known target address for collected funds, so we need this transition to manually point the target address. | :heavy_check_mark: |
-|`transferToDev`|  | Transfer dev share of DPS to `dev_fund` | :heavy_check_mark: |
+|`transferToDev`|  | Transfer dev share of DPS to `dev_fund` |
 
 #### Housekeeping Transitions
 
-| Name | Params | Description | Callable when paused? |
+| Name | Params | Description |
 |--|--|--|--|
-|`whitelist`| `address : ByStr20` | Add `address` to whitelist. `_sender` must be `owner`. | :heavy_check_mark: |
-|`unWhitelist`| `address : ByStr20` | Remove `address` from whitelist. `_sender` must be `owner`. | :heavy_check_mark: |
-|`transferOwnership`|`newOwner : ByStr20`|Allows the current `owner` to transfer control of the contract to a `newOwner`. <br>  :warning: **Note:** `_sender` must be the current `owner` in the contract.  | :heavy_check_mark: |
-|`updatePauser`| `newPauser : ByStr20` |  Replace the current `pauser` with the `newPauser`.  <br>  :warning: **Note:** `_sender` must be the current `owner` in the contract. | :heavy_check_mark: |
-|`updateWithdrawer`| `to : ByStr20` | Replace the current `withdrawer` with the `newWithdrawer`. <br>  :warning: **Note:** `_sender` must be the current `withdrawer` in the contract. | :heavy_check_mark: |
-
-#### Pause-related Transitions
-
-| Name | Params | Description | Callable when paused? |
-|--|--|--|--|
-|`pause`|  | Pause the contract to temporarily stop all transfer of tokens and other operations. Only the current `pauser` can invoke this transition.  <br>  :warning: **Note:** `initiator` must be the current `pauser` in the contract.  | :heavy_check_mark: |
-|`unpause`|  | Unpause the contract to re-allow all transfer of tokens and other operations. Only the current `pauser` can invoke this transition.  <br>  :warning: **Note:** `initiator` must be the current `pauser` in the contract.  | :heavy_check_mark: |
+|`whitelist`| `address : ByStr20` | Add `address` to whitelist. `_sender` must be `owner`. |
+|`unWhitelist`| `address : ByStr20` | Remove `address` from whitelist. `_sender` must be `owner`. |
+|`transferOwnership`|`newOwner : ByStr20`|Allows the current `owner` to transfer control of the contract to a `newOwner`. <br>  :warning: **Note:** `_sender` must be the current `owner` in the contract.  |
+|`updateWithdrawer`| `to : ByStr20` | Replace the current `withdrawer` with the `newWithdrawer`. <br>  :warning: **Note:** `_sender` must be the current `withdrawer` in the contract. |
