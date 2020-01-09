@@ -14,20 +14,20 @@ let mk_contract_initialized_event =
 (* Event for communicating a new transaction id *)
 let mk_transaction_added_event =
   fun (tc : Uint32) =>
-  fun (fundr_contract : ByStr20) =>
+  fun (wallet_contract : ByStr20) =>
   fun (recipient : ByStr20) =>
   fun (amount : Uint128) =>
   fun (tag : String) =>
-    { _eventname : "Transaction created" ; transactionId : tc; fundrContract : fundr_contract; recipient : recipient; amount : amount; tag : tag  }
+    { _eventname : "Transaction created" ; transactionId : tc; walletContract : wallet_contract; recipient : recipient; amount : amount; tag : tag  }
 
 (* Event for communicating the execution of a transaction *)
 let mk_transaction_executed_event =
   fun (tc : Uint32) =>
-  fun (fundr_contract : ByStr20) =>
+  fun (wallet_contract : ByStr20) =>
   fun (recipient : ByStr20) =>
   fun (amount : Uint128) =>
   fun (tag : String) =>
-    { _eventname : "Transaction executed"; transactionId : tc; fundrContract : fundr_contract; recipient : recipient; amount : amount; tag : tag }
+    { _eventname : "Transaction executed"; transactionId : tc; walletContract : wallet_contract; recipient : recipient; amount : amount; tag : tag }
 
 (* Event for communicating that a transaction was signed *)
 let mk_signed_transaction_event =
@@ -99,15 +99,15 @@ let mk_owners_map =
 
 (* Create one transaction message *)
 let transaction_msg =
-  fun (fundr_contract : ByStr20) =>
+  fun (wallet_contract : ByStr20) =>
   fun (address : ByStr20) =>
   fun (amount : Uint128) =>
   fun (tag : String) =>
-    {_tag : tag; _recipient : fundr_contract; _amount : amount; to: address }
+    {_tag : tag; _recipient : wallet_contract; _amount : amount; to: address }
 
 (* Wrap one transaction message as singleton list *)
 let transaction_msg_as_list =
-  fun (fundr_contract : ByStr20) =>
+  fun (wallet_contract : ByStr20) =>
   fun (address : ByStr20) =>
   fun (amount : Uint128) =>
   fun (tag : String) =>
@@ -115,7 +115,7 @@ let transaction_msg_as_list =
       fun (msg : Message) => 
         let nil_msg = Nil {Message} in
         Cons {Message} msg nil_msg in
-    let msg = transaction_msg fundr_contract address amount tag in
+    let msg = transaction_msg wallet_contract address amount tag in
     one_msg msg
 
 (***************************************************)
@@ -212,7 +212,7 @@ procedure AddSignature (transactionId : Uint32, signee : ByStr20)
 end
 
 (* Submit a transaction for future signoff *)
-transition SubmitTransaction (fundr_contract : ByStr20, recipient : ByStr20, amount : Uint128, tag : String)
+transition SubmitTransaction (wallet_contract : ByStr20, recipient : ByStr20, amount : Uint128, tag : String)
   (* Only allow owners to submit new transactions *)
   sender_is_owner <- exists owners[_sender];
   match sender_is_owner with
@@ -222,7 +222,7 @@ transition SubmitTransaction (fundr_contract : ByStr20, recipient : ByStr20, amo
   | True =>
     tc <- transactionCount;
     (* Create new transaction *)
-    transaction = Trans fundr_contract recipient amount tag;
+    transaction = Trans wallet_contract recipient amount tag;
     (* Add transaction to outstanding list of transactions *)
     transactions[tc] := transaction; 
     (* Sender implicitly signs *)
@@ -274,7 +274,7 @@ transition ExecuteTransaction (transactionId : Uint32)
     (* Transaction was not found. *)
     err = UnknownTransactionId;
     MakeError err
-  | Some (Trans fundr_contract recipient amount tag) =>
+  | Some (Trans wallet_contract recipient amount tag) =>
     (* Only the recipient or an owner can execute the transaction *)
     recipient_is_sender = builtin eq recipient _sender;
     sender_is_owner <- exists owners[_sender];
@@ -308,9 +308,9 @@ transition ExecuteTransaction (transactionId : Uint32)
             (* Transaction approved, and enough money available. *)
             (* Remove transaction and signatures, and execute. *)
             DeleteTransaction transactionId;
-            msgs = transaction_msg_as_list fundr_contract recipient amount tag;
+            msgs = transaction_msg_as_list wallet_contract recipient amount tag;
             send msgs;
-            e = mk_transaction_executed_event transactionId fundr_contract recipient amount tag;
+            e = mk_transaction_executed_event transactionId wallet_contract recipient amount tag;
             event e
           end
         end
