@@ -8,10 +8,10 @@ function check() {
 }
 
 if [ -n "$1" ] ; then
-	check $1/implementation/*.scilla
+	check $1/*.scilla
 else
 	for i in DPS_token Fundraising_ZIL Multisig_withdrawer
 	do
-		check $i/implementation/*.scilla
+		check $i/*.scilla
 	done
 fi
