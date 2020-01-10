@@ -1,0 +1,17 @@
+#!/bin/bash
+
+. ./scripts/functions.sh
+
+function check() {
+	title "checking $1"
+	scilla-checker -gaslimit 8000 $1 
+}
+
+if [ -n "$1" ] ; then
+	check $1/implementation/*.scilla
+else
+	for i in DPS_token Fundraising_ZIL Multisig_withdrawer
+	do
+		check $i/implementation/*.scilla
+	done
+fi
