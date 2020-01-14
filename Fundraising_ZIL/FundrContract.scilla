@@ -65,6 +65,8 @@ field  withdrawer : ByStr20	= init_withdrawer	(*Current withdrawer in the contra
 field paused : Bool	= False	(*True means the contract is paused.*)
 field  dps_sold : Uint128	= Uint128 0	(*Amount of DPS sold by the moment. *)
 field transferred_to_dev : Uint128 = Uint128 0 (*amount already transferred to dev_fund*)
+field price_decimals : Uint32 = Uint32 4
+field ratio_decimals : Uint32 = Uint32 3
 
 (*If fundraising is not public, only address from this map are allowed to do exchange transfers.*)
 field whitelist : Map ByStr20 Uint128	= Emp ByStr20 Uint128
@@ -80,8 +82,7 @@ transition buyDPS()
         match valid_block with
         | True =>
             ten = Uint128 10;
-            four = Uint32 4;
-            p = builtin pow ten four;
+            p = builtin pow ten price_decimals;
             dps_request = builtin mul _amount  p;
             dps_request = builtin div dps_request dps_price;
             leftover = builtin sub dps_amount ds;
@@ -95,7 +96,9 @@ transition buyDPS()
             msgs = one_msg msg;
             send msgs;
             dps_sold_v = builtin add ds dps_to_send;
-            dps_sold := dps_sold_v
+            dps_sold := dps_sold_v;
+            e = {_eventname : "DPSsold"; caller : _sender; total_dps_sold : dps_sold};
+            event e
         | False =>
             e = { _exception : "BlockNumberOutOfRange"};
             throw e
@@ -123,7 +126,9 @@ transition withdraw(to : ByStr20)
             msg2 = {_tag : "OnFundrasingEnd";_recipient : dps_contract; _amount : Uint128 0};
             msgs1 = one_msg msg1;
             msgs2 = Cons {Message} msg2 msgs1;
-            send msgs2
+            send msgs2;
+            e = {_eventname : "WithdrawSuccess"; caller : _sender; zil_amount : bal};
+            event e
         | False =>
             e = { _exception : "FundrasingNotOver"};
             throw e
@@ -137,16 +142,17 @@ end
 transition transferToDev()
     ds <- dps_sold;
     ttd <- transferred_to_dev;
-    three = Uint32 3;
     ten = Uint128 10;
-    p = builtin pow ten three;
+    p = builtin pow ten ratio_decimals;
     target = builtin mul ds dev_ratio;
     target = builtin div target p;
     to_send = builtin sub target ttd;
     msg = { _tag : "Transfer"; _recipient : dps_contract; _amount : Uint128 0;
                     to : dev_fund; tokens : to_send; code : Uint32 0};
     msgs = one_msg msg;
-    send msgs
+    send msgs;
+    e = {_eventname : "TransferToDevSuccess"; caller : _sender; dps_amount : to_send};
+    event e    
 end
 
 transition whitelist(address : ByStr20)
@@ -155,7 +161,9 @@ transition whitelist(address : ByStr20)
     match valid_auth with
     | True =>
         one = Uint128 1;
-        whitelist[address] := one
+        whitelist[address] := one;
+        e = {_eventname : "WhitelistSuccess"; caller : _sender; address : address};
+        event e
     | False => 
         e = { _exception : "SenderNotAuthorized"};
         throw e
@@ -179,6 +187,9 @@ transition transferOwnership(newOwner : ByStr20)
     valid_auth = builtin eq _sender ow;
     match valid_auth with
     | True =>
+        e = {_eventname : "TransferOwnershipSuccess"; 
+            caller : _sender; old_owner : ow; new_owner : newOwner};
+        event e;
         owner := newOwner
     | False => 
         e = { _exception : "SenderNotAuthorized"};
@@ -191,6 +202,9 @@ transition updateWithdrawer(newWithdrawer : ByStr20)
     valid_auth = builtin eq _sender wdr;
     match valid_auth with
     | True =>
+        e = {_eventname : "UpdateWithdrawerSuccess"; 
+            caller : _sender; old_withdrawer: wrd; new_withdrawer : newWithdrawer};
+        event e;
         withdrawer := newWithdrawer
     | False => 
         e = { _exception : "SenderNotAuthorized"};
