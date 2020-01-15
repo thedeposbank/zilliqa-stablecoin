@@ -85,7 +85,7 @@ The table below presents the mutable fields of the contract and their initial va
 | Name | Params | Description | `_sender` | Callable when paused? |
 |--|--|--|--|--|
 | `transferToDev` | | Call `transferToDev` procedure. Fail if `devAcc` is `None` or if `fundrInProgress` is `False`. | any | :heavy_check_mark: |
-| `onFundraisingStart` | `amount` | Set `fundrInProgress` to `True`. Mint `amount` of tokens to `fundrContract` | `fundrContract` | :heavy_check_mark: |
+| `onFundraisingStart` | `amount : Uint128` | Set `fundrInProgress` to `True`. Mint `amount` of tokens to `fundrContract` | `fundrContract` | :heavy_check_mark: |
 | `onFundraisingEnd` | | Mint to `devAcc` the rest of development fund share. Set `fundrInProgress` to `False`. Burn the rest of DPS tokens on `fundrContract`. | `fundrContract` | :heavy_check_mark: |
 |`connectFundraisingContract`|`address : ByStr20`| Set new address of fundraising contract, send to this address message `onFundrConnect`. Works only when `fundrInProcess` is `False`. | `fundraisingManager` | :heavy_check_mark: |
 | `changeDevAcc` | `newDevAcc : ByStr20` | Replace the current `devAcc` to `newDevAcc` | `devAccChanger` | :heavy_check_mark: |
@@ -111,4 +111,3 @@ The table below presents the mutable fields of the contract and their initial va
 | Name | Params | Description | `_sender` | Callable when paused? |
 |--|--|--|--|--|
 |`burn`| `value : Uint128` | Burn `value` number of tokens on address of `_sender`. | `owner` or `approvedContract` | <center>:x:</center>  |
-|`burnAll`| | Burn all tokens on address of `_sender`. | `owner` or `approvedContract` | <center>:x:</center>  |
