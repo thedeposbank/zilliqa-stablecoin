@@ -13,6 +13,9 @@ let zero = Uint128 0
 let t = True
 let f = False
 
+(* 30% *)
+let devRate = Uint128 30000000
+
 let min_int =
   fun (a : Uint128) => fun (b : Uint128) =>
   let alt = builtin lt a b in
@@ -58,6 +61,11 @@ field pauser : ByStr20 = init_owner
 field contractApprover : ByStr20 = init_owner
 field fundraisingManager : ByStr20 = init_owner
 field fundrContract : Option ByStr20 = None {ByStr20}
+field devAcc : Option ByStr20 = None {ByStr20}
+field devAccChanger : ByStr20 = init_owner
+field fundrInProcess : Bool = False
+field beforeFundrSupply : Uint128 = 0
+field alreadyTransferredToDev : Uint128 = 0
 field paused : Bool = False
 field totalSupply : Uint128 = zero
 field balances : Map ByStr20 Uint128 = Emp ByStr20 Uint128
@@ -260,6 +268,18 @@ transition updateFundraisingManager(newFundraisingManager : ByStr20)
   end
 end
 
+transition updateDevAccChanger(newDevAccChanger : ByStr20)
+  ch <- devAccChanger;
+  valid_auth = builtin eq _sender ch;
+  match valid_auth with
+  | True =>
+    devAccChanger := newDevAccChanger
+  | False => 
+    e = { _exception : "SenderNotAuthorized" };
+    throw e
+  end
+end
+
 transition connectFundraisingContract(address : ByStr20)
   mgr <- fundraisingManager;
   valid_auth = builtin eq _sender mgr;
@@ -307,6 +327,23 @@ transition revokeContract(address : ByStr20)
     e = { _exception : "SenderNotAuthorized" };
     throw e
   end
+end
+
+procedure mint(to : ByStr20, value : Uint128)
+  t <- totalSupply;
+  newTotalSupply = builtin add value t;
+  totalSupply := newTotalSupply;
+  x <- balances[to];
+  current_val = match x with
+                | Some v => v
+                | None   => zero
+                end;
+  new_bal = builtin add value current_val;
+  balances[to] := new_bal;
+end
+
+transition transferToDev()
+
 end
 
 transition pause()
