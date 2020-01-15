@@ -55,21 +55,42 @@ start_block	: BNum, (*not inclusive*)
 end_block : BNum, (*not inclusive*)
 dps_amount : Uint128,
 dps_price : Uint128, (*DPS/ZIL price with decimals 4, 10000 means DPS/ZIL = 1*)
-public : Bool,
-dev_fund : ByStr20,
-dev_ratio : Uint128) (*3000 means 30%*)
+public : Bool)
 
 field owner : ByStr20	= init_owner	(*Current owner of the contract.*)
 field pauser : ByStr20	= init_owner	(*Current pauser in the contract.*)
 field  withdrawer : ByStr20	= init_withdrawer	(*Current withdrawer in the contract.*)
 field paused : Bool	= False	(*True means the contract is paused.*)
 field  dps_sold : Uint128	= Uint128 0	(*Amount of DPS sold by the moment. *)
-field transferred_to_dev : Uint128 = Uint128 0 (*amount already transferred to dev_fund*)
 field price_decimals : Uint32 = Uint32 4
-field ratio_decimals : Uint32 = Uint32 3
 
 (*If fundraising is not public, only address from this map are allowed to do exchange transfers.*)
 field whitelist : Map ByStr20 Uint128	= Emp ByStr20 Uint128
+
+procedure startFundr()
+    msg  = { _tag : "onFundraisingStart"; _recipient : dps_contract; _amount : Uint128 0;
+            amount : dps_amount};
+    msgs = one_msg msg;
+    send msgs
+end
+
+procedure endFundr()
+    msg  = { _tag : "onFundrasingEnd"; _recipient : dps_contract; _amount : Uint128 0;
+            amount : dps_amount};
+    msgs = one_msg msg;
+    send msgs
+end
+
+transition onFundrConnect()
+    valid_auth = builtin eq _sender dps_contract;
+    match valid_auth with
+    | True =>
+        startFundr
+    | False =>
+        e = { _exception : "SenderNotAuthorized"};
+        throw e
+    end
+end
 
 transition buyDPS()
     valid_auth <- exists whitelist[_sender];
@@ -82,7 +103,8 @@ transition buyDPS()
         match valid_block with
         | True =>
             ten = Uint128 10;
-            p = builtin pow ten price_decimals;
+            pd <- price_decimals;
+            p = builtin pow ten pd;
             dps_request = builtin mul _amount  p;
             dps_request = builtin div dps_request dps_price;
             leftover = builtin sub dps_amount ds;
@@ -97,7 +119,7 @@ transition buyDPS()
             send msgs;
             dps_sold_v = builtin add ds dps_to_send;
             dps_sold := dps_sold_v;
-            e = {_eventname : "DPSsold"; caller : _sender; total_dps_sold : dps_sold};
+            e = {_eventname : "DPSsold"; caller : _sender; total_dps_sold : dps_sold_v};
             event e
         | False =>
             e = { _exception : "BlockNumberOutOfRange"};
@@ -139,22 +161,6 @@ transition withdraw(to : ByStr20)
     end
 end
 
-transition transferToDev()
-    ds <- dps_sold;
-    ttd <- transferred_to_dev;
-    ten = Uint128 10;
-    p = builtin pow ten ratio_decimals;
-    target = builtin mul ds dev_ratio;
-    target = builtin div target p;
-    to_send = builtin sub target ttd;
-    msg = { _tag : "Transfer"; _recipient : dps_contract; _amount : Uint128 0;
-                    to : dev_fund; tokens : to_send; code : Uint32 0};
-    msgs = one_msg msg;
-    send msgs;
-    e = {_eventname : "TransferToDevSuccess"; caller : _sender; dps_amount : to_send};
-    event e    
-end
-
 transition whitelist(address : ByStr20)
     ow <- owner;
     valid_auth = builtin eq _sender ow;
@@ -175,7 +181,9 @@ transition unWhitelist(address : ByStr20)
     valid_auth = builtin eq _sender ow;
     match valid_auth with
     | True =>
-        delete whitelist[address]
+        delete whitelist[address];
+        e = {_eventname : "unWhitelistSuccess"; caller : _sender; address : address};
+        event e
     | False => 
         e = { _exception : "SenderNotAuthorized"};
         throw e
@@ -203,10 +211,22 @@ transition updateWithdrawer(newWithdrawer : ByStr20)
     match valid_auth with
     | True =>
         e = {_eventname : "UpdateWithdrawerSuccess"; 
-            caller : _sender; old_withdrawer: wrd; new_withdrawer : newWithdrawer};
+            caller : _sender; old_withdrawer: wdr; new_withdrawer : newWithdrawer};
         event e;
         withdrawer := newWithdrawer
     | False => 
+        e = { _exception : "SenderNotAuthorized"};
+        throw e
+    end
+end
+
+transition endFundrasing()
+    ow <- owner;
+    valid_auth = builtin eq _sender ow;
+    match valid_auth with
+    | True =>
+        endFundr
+    | False =>
         e = { _exception : "SenderNotAuthorized"};
         throw e
     end

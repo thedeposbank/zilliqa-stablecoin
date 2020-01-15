@@ -11,7 +11,6 @@ After fundraising, contract owner burns rest of DPS tokens.
 | `init_owner`      | Initial owner of the contract. Most other roles are initialised with this value |
 | `owner`           | Current owner, initialised with `init_owner`. Admin account, has permission for critical actions like changing other roles executors |
 | `pauser`          | Can pause/unpause contract. May be useful in emergency cases, like admin keys leakage etc. |
-| `dev_fund`        | Development fund address. For each sold DPS token, `dev_ratio` DPS tokens are sent to `dev_fund`. |
 | `withdrawer`      | Contract/person allowed to withdraw funds and, optionally, pass this allowance to another address. |
 
 ### Immutable fields
@@ -28,8 +27,6 @@ The table below lists the parameters that are defined at the contract deployment
 |`dps_amount`   | `Uint128` | Amount of DPS to sell. |
 |`dps_price`    | `Uint128` | Price for one DPS token. |
 |`public`       | `Boolean` | Are fundraisng transfers are received from any address or from approved addresses only. |
-|`dev_fund`     | `ByStr20` | Development fund address is known by the time of fundraising contract deployment. |
-|`dev_ratio`    | `Uint128` | Ratio of dev share DPS tokens amount to all sold DPS amount.
 
 ### Mutable fields
 
@@ -53,25 +50,21 @@ The table below presents the mutable fields of the contract and their initial va
 
 ### Transitions
 
-| Name | Params | Description | Callable when paused? |
+#### Fundrasing transitions
+
+| Name | Params | Description | `_sender` |
 |--|--|--|--|
-|`swap`|        | Swap `_amount` of ZIL to appropriate amount of DPS. `_sender` must be in `whitelist` map. | :x: |
-|`withdraw`| `to : ByStr20` | Transfer all collected funds to given address. `_sender` must be `withdrawer`. When fundraising contract is deployed, there is no known target address for collected funds, so we need this transition to manually point the target address. | :heavy_check_mark: |
-|`getDevFund`|  | Transfer dev share of DPS to `dev_fund` | :heavy_check_mark: |
+|`buyDPS`| `-` | Swap `_amount` of ZIL to appropriate amount of DPS. Available only strictly within (`start_block`, `end_block`) interval | any (whitelisted if sale is not public)|
+|`withdraw`| `to : ByStr20` | Transfer all collected funds to given address. When fundraising contract is deployed, there is no known target address for collected funds, so we need this transition to manually point the target address. | `withdrawer` |
+|`onFundrConnect`|`-`|Processes notification when this contract is connected to `dps_contract` as fundrasing contract, as a responce calls `onStartFundrasing` | `dps_contract` |
+| `endFundrasing` | `-` | Calls `onFundrasingEnd` transition of `dps_contract`. Might be called any time no matter block number and total amount of sold `DPS` tokens. Expected that all `DPS` balance of current contract is burnt after the call  | `owner` |
 
 #### Housekeeping Transitions
 
-| Name | Params | Description | Callable when paused? |
+| Name | Params | Description | `_sender` |
 |--|--|--|--|
-|`whitelist`| `address : ByStr20` | Add `address` to whitelist. `_sender` must be `owner`. | :heavy_check_mark: |
-|`unWhitelist`| `address : ByStr20` | Remove `address` from whitelist. `_sender` must be `owner`. | :heavy_check_mark: |
-|`transferOwnership`|`newOwner : ByStr20`|Allows the current `owner` to transfer control of the contract to a `newOwner`. <br>  :warning: **Note:** `_sender` must be the current `owner` in the contract.  | :heavy_check_mark: |
-|`updatePauser`| `newPauser : ByStr20` |  Replace the current `pauser` with the `newPauser`.  <br>  :warning: **Note:** `_sender` must be the current `owner` in the contract. | :heavy_check_mark: |
-|`updateWithdrawer`| `to : ByStr20` | Replace the current `withdrawer` with the `newWithdrawer`. <br>  :warning: **Note:** `_sender` must be the current `withdrawer` in the contract. | :heavy_check_mark: |
+|`whitelist`| `address : ByStr20` | Add `address` to whitelist. |`owner` |
+|`unWhitelist`| `address : ByStr20` | Remove `address` from whitelist.| `owner` |
+|`transferOwnership`|`newOwner : ByStr20`|Allows the current `owner` to transfer control of the contract to a `newOwner` | `owner`|
+|`updateWithdrawer`| `to : ByStr20` | Replace the current `withdrawer` with the `newWithdrawer`| `withdrawer`|
 
-#### Pause-related Transitions
-
-| Name | Params | Description | Callable when paused? |
-|--|--|--|--|
-|`pause`|  | Pause the contract to temporarily stop all transfer of tokens and other operations. Only the current `pauser` can invoke this transition.  <br>  :warning: **Note:** `initiator` must be the current `pauser` in the contract.  | :heavy_check_mark: |
-|`unpause`|  | Unpause the contract to re-allow all transfer of tokens and other operations. Only the current `pauser` can invoke this transition.  <br>  :warning: **Note:** `initiator` must be the current `pauser` in the contract.  | :heavy_check_mark: |
