@@ -64,7 +64,7 @@ The table below presents the mutable fields of the contract and their initial va
 |--|--|--|
 | `mint` | `to : ByStr20, value : Uint128` | Mint `value` tokens on `to` account. |
 | `burnAll` | `from : ByStr20` | Burn all tokens on `from` account. Used in `onFundraisingEnd` transition. |
-| `transferToDev` | | Mint to `devAcc` accumulated at the moment development fund share. Update `alreadyTransferredToDev`. |
+| `transferToDevProc` | | Mint to `devAcc` accumulated at the moment development fund share. Update `alreadyTransferredToDev`. |
 
 ### Transitions
 
