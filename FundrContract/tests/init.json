@@ -1,0 +1,62 @@
+[
+	{ 
+		"vname" : "_scilla_version",
+		"type" : "Uint32",
+		"value" : "0"
+	},
+	{
+		"vname" : "_creation_block",
+		"type" : "BNum",
+		"value" : "1"
+	},
+	{
+		"vname" : "_this_address",
+		"type" : "ByStr20",
+		"value" : "0x1000000000000000000000000000000000000000"
+	},
+	{
+		"vname" : "init_owner",
+		"type" : "ByStr20", 
+		"value" : "0x0000000000000000000000000000000000000001"
+	},
+	{
+		"vname" : "init_withdrawer",
+		"type" : "ByStr20" ,
+		"value" : "0x0000000000000000000000000000000000000002"
+	},
+	{ 
+		"vname" : "dps_contract",
+		"type" : "ByStr20",
+		"value" : "0x1000000000000000000000000000000000000001"
+	},
+	{
+		"vname": "start_block",
+		"type": "BNum",
+		"value": "10"
+	},
+	{
+		"vname": "end_block",
+		"type": "BNum",
+		"value": "20"
+	},
+	{
+		"vname": "dps_amount",
+		"type": "Uint128",
+		"value": "15000000"
+	},
+	{
+		"vname": "dps_price",
+		"type": "Uint128",
+		"value": "20000"
+	},
+	{
+		"vname": "price_decimals",
+		"type": "Uint32",
+		"value": "4"
+	},
+	{
+		"vname": "public",
+		"type": "Bool",
+		"value": { "constructor": "False", "argtypes": [], "arguments": [] }
+	}
+]
