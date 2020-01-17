@@ -10,9 +10,8 @@ function check() {
 if [ -n "$1" ] ; then
 	check $1/*.scilla
 else
-	#for i in StableCoinSimulator SwapContract TimeOracle dBonds
-	#do
-	#	check $i/*.scilla
-	#done
-	exit 1
+	for i in DPS_token Fundraising_ZIL Multisig_withdrawer
+	do
+		check $i/*.scilla
+	done
 fi

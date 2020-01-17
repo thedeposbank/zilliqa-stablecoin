@@ -10,8 +10,12 @@ library DPS_Token
 
 let one = Uint128 1
 let zero = Uint128 0
-let t = True
-let f = False
+let true = True
+let false = False
+
+(* 30% *)
+let devRate = Uint128 30000000
+let denominator = Uint128 100000000
 
 let min_int =
   fun (a : Uint128) => fun (b : Uint128) =>
@@ -58,6 +62,11 @@ field pauser : ByStr20 = init_owner
 field contractApprover : ByStr20 = init_owner
 field fundraisingManager : ByStr20 = init_owner
 field fundrContract : Option ByStr20 = None {ByStr20}
+field devAcc : Option ByStr20 = None {ByStr20}
+field devAccChanger : ByStr20 = init_owner
+field fundrInProcess : Bool = False
+field beforeFundrSupply : Uint128 = Uint128 0
+field alreadyTransferredToDev : Uint128 = Uint128 0
 field paused : Bool = False
 field totalSupply : Uint128 = zero
 field balances : Map ByStr20 Uint128 = Emp ByStr20 Uint128
@@ -260,13 +269,35 @@ transition updateFundraisingManager(newFundraisingManager : ByStr20)
   end
 end
 
+transition updateDevAccChanger(newDevAccChanger : ByStr20)
+  ch <- devAccChanger;
+  valid_auth = builtin eq _sender ch;
+  match valid_auth with
+  | True =>
+    devAccChanger := newDevAccChanger
+  | False => 
+    e = { _exception : "SenderNotAuthorized" };
+    throw e
+  end
+end
+
 transition connectFundraisingContract(address : ByStr20)
   mgr <- fundraisingManager;
   valid_auth = builtin eq _sender mgr;
   match valid_auth with
   | True =>
-    new_addr = Some {ByStr20} address;
-    fundrContract := new_addr
+    fundr_in_process <- fundrInProcess;
+    match fundr_in_process with
+    | False =>
+      new_addr = Some {ByStr20} address;
+      fundrContract := new_addr;
+      msg = { _tag : "onFundrConnect"; _recipient : address; _amount : zero };
+      msgs = one_msg msg;
+      send msgs
+    | True =>
+      e = { _exception : "InFundraising" };
+      throw e
+    end
   | False => 
     e = { _exception : "SenderNotAuthorized" };
     throw e
@@ -290,7 +321,7 @@ transition approveContract(address : ByStr20)
   valid_auth = builtin eq _sender apprvr;
   match valid_auth with
   | True =>
-    approvedContracts[address] := t
+    approvedContracts[address] := true
   | False =>
     e = { _exception : "SenderNotAuthorized" };
     throw e
@@ -309,12 +340,168 @@ transition revokeContract(address : ByStr20)
   end
 end
 
+procedure mint(to : ByStr20, value : Uint128)
+  t <- totalSupply;
+  newTotalSupply = builtin add value t;
+  totalSupply := newTotalSupply;
+  x <- balances[to];
+  current_val = match x with
+                | Some v => v
+                | None   => zero
+                end;
+  new_bal = builtin add value current_val;
+  balances[to] := new_bal
+end
+
+procedure burnAll(from : ByStr20)
+  x <- balances[from];
+  match x with
+  | Some balance =>
+    t <- totalSupply;
+    newTotalSupply = builtin sub t balance;
+    totalSupply := newTotalSupply;
+    balances[from] := zero; (* or maybe better delete? *)
+    msg = { _tag : "BurnSuccess"; _recipient : from; _amount : zero;
+            sender : _sender; amount : balance };
+    msgs = one_msg msg;
+    send msgs
+  | None =>
+    (* NOP? *)
+  end
+end
+
+(* calculate (totalSupply-beforeFundrSupply-balances[fundrContract])*devRate/1e8-alreadyTransferredToDev *)
+(* and mint this amount to devAcc, if it positive. update alreadyTransferredToDev *)
+procedure transferToDevProc()
+  addr <- fundrContract;
+  match addr with
+  | Some fundr_contract =>
+    x <- balances[fundr_contract];
+    fundr_contr_balance = match x with
+                          | Some v => v
+                          | None   => zero
+                          end;
+    total_supply <- totalSupply;
+    before_fundr_supply <- beforeFundrSupply;
+    already_transferred <- alreadyTransferredToDev;
+    t = builtin sub total_supply before_fundr_supply;
+    t = builtin sub t fundr_contr_balance;
+    t = builtin mul t devRate;
+    to_transfer = builtin div t denominator;
+    need_to_transfer = uint128_gt to_transfer already_transferred;
+    match need_to_transfer with
+    | True =>
+      alreadyTransferredToDev := to_transfer;
+      to_transfer = builtin sub to_transfer already_transferred;
+      dev_acc <- devAcc;
+      match dev_acc with
+      | Some addr =>
+        mint addr to_transfer
+      | None =>
+        e = { _exception: "NoDevAccount" };
+        throw e
+      end
+    | False =>
+      (* NOP? *)
+    end
+  | None =>
+    e = { _exception: "NoFundraisingContract" };
+    throw e
+  end
+end
+
+transition transferToDev()
+  dev_acc <- devAcc;
+  match dev_acc with
+  | Some v =>
+    fundr_in_progress <- fundrInProcess;
+    match fundr_in_progress with
+    | True =>
+      transferToDevProc
+    | False =>
+      e = { _exception : "NotInFundraising" };
+      throw e
+    end
+  | None =>
+    e = { _exception : "NoDevAccount" }
+  end
+end
+
+transition onFundraisingStart(amount : Uint128)
+  addr <- fundrContract;
+  match addr with
+  | Some fundr_contract =>
+    fundr_in_progress <- fundrInProcess;
+    valid_auth = builtin eq _sender fundr_contract;
+    match valid_auth with
+    | True =>
+      match fundr_in_progress with
+      | False =>
+        total_supply <- totalSupply;
+        beforeFundrSupply := total_supply;
+        alreadyTransferredToDev := zero;
+        fundrInProcess := true;
+        mint fundr_contract amount
+      | True =>
+        e = { _exception : "InFundraising" };
+        throw e
+      end
+    | False =>
+      e = { _exception : "SenderNotAuthorized" };
+      throw e
+    end
+  | None =>
+    e = { _exception : "NoFundraisingContract" };
+    throw e
+  end
+end
+
+transition onFundraisingEnd()
+  addr <- fundrContract;
+  match addr with
+  | Some fundr_contract =>
+    fundr_in_progress <- fundrInProcess;
+    valid_auth = builtin eq _sender fundr_contract;
+    match valid_auth with
+    | True =>
+      match fundr_in_progress with
+      | True =>
+        fundrInProcess := false;
+        transferToDevProc;
+        burnAll fundr_contract
+      | False =>
+        e = { _exception : "NotInFundraising" };
+        throw e
+      end
+    | False =>
+      e = { _exception : "SenderNotAuthorized" };
+      throw e
+    end
+  | None =>
+    e = { _exception : "NoFundraisingContract" };
+    throw e
+  end
+end
+
+transition changeDevAcc(newDevAcc : ByStr20)
+  dev_acc_changer <- devAccChanger;
+  valid_auth = builtin eq _sender dev_acc_changer;
+  match valid_auth with
+  | True =>
+    dev_acc = Some {ByStr20} newDevAcc;
+    devAcc := dev_acc
+  | False =>
+    e = { _exception : "SenderNotAuthorized" };
+    throw e
+  end
+end
+
 transition pause()
   psr <- pauser;
   valid_auth = builtin eq _sender psr;
   match valid_auth with
   | True =>
-    paused := t
+    paused := true
   | False => 
     e = { _exception : "SenderNotAuthorized" };
     throw e
@@ -326,38 +513,7 @@ transition unpause()
   valid_auth = builtin eq _sender psr;
   match valid_auth with
   | True =>
-    paused := f
-  | False => 
-    e = { _exception : "SenderNotAuthorized" };
-    throw e
-  end
-end
-
-transition mint(to : ByStr20, value : Uint128)
-  valid_auth <- exists approvedContracts[_sender];
-  match valid_auth with
-  | True =>
-    isPaused <- paused;
-    match isPaused with
-    | False =>
-      t <- totalSupply;
-      newTotalSupply = builtin add value t;
-      totalSupply := newTotalSupply;
-      x <- balances[to];
-      current_val = match x with
-                    | Some v => v
-                    | None   => zero
-                    end;
-      new_bal = builtin add value current_val;
-      balances[to] := new_bal;
-      msg = { _tag : "MintSuccess"; _recipient : to; _amount : zero;
-              sender : _sender; amount : value };
-      msgs = one_msg msg;
-      send msgs
-    | True =>
-      e = { _exception : "Paused" };
-      throw e
-    end
+    paused := false
   | False =>
     e = { _exception : "SenderNotAuthorized" };
     throw e
@@ -365,7 +521,10 @@ transition mint(to : ByStr20, value : Uint128)
 end
 
 transition burn(from : ByStr20, value : Uint128)
-  valid_auth <- exists approvedContracts[_sender];
+  approved <- exists approvedContracts[_sender];
+  ow <- owner;
+  is_owner = builtin eq _sender ow;
+  valid_auth = orb approved is_owner;
   match valid_auth with
   | True =>
     isPaused <- paused;
