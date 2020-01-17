@@ -521,7 +521,10 @@ transition unpause()
 end
 
 transition burn(from : ByStr20, value : Uint128)
-  valid_auth <- exists approvedContracts[_sender];
+  approved <- exists approvedContracts[_sender];
+  ow <- owner;
+  is_owner = builtin eq _sender ow;
+  valid_auth = orb approved is_owner;
   match valid_auth with
   | True =>
     isPaused <- paused;
