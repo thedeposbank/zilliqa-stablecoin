@@ -411,19 +411,13 @@ procedure transferToDevProc()
 end
 
 transition transferToDev()
-  dev_acc <- devAcc;
-  match dev_acc with
-  | Some v =>
-    fundr_in_progress <- fundrInProcess;
-    match fundr_in_progress with
-    | True =>
-      transferToDevProc
-    | False =>
-      e = { _exception : "NotInFundraising" };
-      throw e
-    end
-  | None =>
-    e = { _exception : "NoDevAccount" }
+  fundr_in_progress <- fundrInProcess;
+  match fundr_in_progress with
+  | True =>
+    transferToDevProc
+  | False =>
+    e = { _exception : "NotInFundraising" };
+    throw e
   end
 end
 

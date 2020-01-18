@@ -1,0 +1,37 @@
+[
+	{
+		"vname" : "_scilla_version",
+		"type" : "Uint32",
+		"value" : "0"
+	},
+	{
+		"vname" : "_creation_block",
+		"type" : "BNum",
+		"value" : "1"
+	},
+	{
+		"vname" : "_this_address",
+		"type" : "ByStr20",
+		"value" : "0x1000000000000000000000000000000000000000"
+	},
+	{
+		"vname" : "name",
+		"type" : "String",
+		"value" : "Utility token"
+	},
+	{
+		"vname" : "symbol",
+		"type" : "String",
+		"value" : "DPS"
+	},
+	{
+		"vname" : "decimals",
+		"type" : "Uint32",
+		"value" : "4"
+	},
+	{
+		"vname" : "init_owner",
+		"type" : "ByStr20", 
+		"value" : "0x0000000000000000000000000000000000000001"
+	}
+]
