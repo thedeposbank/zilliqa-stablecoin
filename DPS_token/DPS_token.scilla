@@ -514,7 +514,7 @@ transition unpause()
   end
 end
 
-transition burn(from : ByStr20, value : Uint128)
+transition burn(value : Uint128)
   approved <- exists approvedContracts[_sender];
   ow <- owner;
   is_owner = builtin eq _sender ow;
@@ -524,7 +524,7 @@ transition burn(from : ByStr20, value : Uint128)
     isPaused <- paused;
     match isPaused with
     | False =>
-      x <- balances[from];
+      x <- balances[_sender];
       current_bal = match x with
                     | Some v => v
                     | None   => zero
@@ -536,8 +536,8 @@ transition burn(from : ByStr20, value : Uint128)
         newTotalSupply = builtin sub t value;
         totalSupply := newTotalSupply;
         new_bal = builtin sub current_bal value;
-        balances[from] := new_bal;
-        msg = { _tag : "BurnSuccess"; _recipient : from; _amount : zero;
+        balances[_sender] := new_bal;
+        msg = { _tag : "BurnSuccess"; _recipient : _sender; _amount : zero;
                 sender : _sender; amount : value };
         msgs = one_msg msg;
         send msgs

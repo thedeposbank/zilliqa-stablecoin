@@ -1,0 +1,84 @@
+{
+  "scilla_major_version": "0",
+  "gas_remaining": "7069",
+  "_accepted": "false",
+  "messages": [
+    {
+      "_tag": "onFundrConnect",
+      "_amount": "0",
+      "_recipient": "0x1000000000000000000000000000000000000011",
+      "params": []
+    }
+  ],
+  "states": [
+    { "vname": "_balance", "type": "Uint128", "value": "0" },
+    {
+      "vname": "fundrContract",
+      "type": "Option (ByStr20)",
+      "value": {
+        "constructor": "Some",
+        "argtypes": [ "ByStr20" ],
+        "arguments": [ "0x1000000000000000000000000000000000000011" ]
+      }
+    },
+    {
+      "vname": "owner",
+      "type": "ByStr20",
+      "value": "0x0000000000000000000000000000000000000002"
+    },
+    {
+      "vname": "pauser",
+      "type": "ByStr20",
+      "value": "0x0000000000000000000000000000000000000003"
+    },
+    {
+      "vname": "contractApprover",
+      "type": "ByStr20",
+      "value": "0x0000000000000000000000000000000000000008"
+    },
+    {
+      "vname": "fundraisingManager",
+      "type": "ByStr20",
+      "value": "0x0000000000000000000000000000000000000005"
+    },
+    {
+      "vname": "devAccChanger",
+      "type": "ByStr20",
+      "value": "0x0000000000000000000000000000000000000007"
+    },
+    {
+      "vname": "devAcc",
+      "type": "Option (ByStr20)",
+      "value": {
+        "constructor": "None",
+        "argtypes": [ "ByStr20" ],
+        "arguments": []
+      }
+    },
+    {
+      "vname": "paused",
+      "type": "Bool",
+      "value": { "constructor": "False", "argtypes": [], "arguments": [] }
+    },
+    {
+      "vname": "fundrInProcess",
+      "type": "Bool",
+      "value": { "constructor": "False", "argtypes": [], "arguments": [] }
+    },
+    { "vname": "totalSupply", "type": "Uint128", "value": "0" },
+    { "vname": "beforeFundrSupply", "type": "Uint128", "value": "0" },
+    { "vname": "alreadyTransferredToDev", "type": "Uint128", "value": "0" },
+    { "vname": "balances", "type": "Map (ByStr20) (Uint128)", "value": [] },
+    {
+      "vname": "allowed",
+      "type": "Map (ByStr20) (Map (ByStr20) (Uint128))",
+      "value": []
+    },
+    {
+      "vname": "approvedContracts",
+      "type": "Map (ByStr20) (Bool)",
+      "value": []
+    }
+  ],
+  "events": []
+}
