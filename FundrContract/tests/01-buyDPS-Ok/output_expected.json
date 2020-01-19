@@ -1,61 +1,61 @@
 {
-    "scilla_major_version": "0",
-    "gas_remaining": "5561",
-    "_accepted": "true",
-    "messages": [
-      {
-        "_tag": "AcceptZil",
-        "_amount": "0",
-        "_recipient": "0x2000000000000000000000000000000000000000",
-        "params": []
-      },
-      {
-        "_tag": "Transfer",
-        "_amount": "0",
-        "_recipient": "0x1000000000000000000000000000000000000001",
-        "params": [
-          {
-            "vname": "to",
-            "type": "ByStr20",
-            "value": "0x2000000000000000000000000000000000000000"
-          },
-          { "vname": "tokens", "type": "Uint128", "value": "10000000" },
-          { "vname": "code", "type": "Uint32", "value": "0" }
-        ]
-      }
-    ],
-    "states": [
-      { "vname": "_balance", "type": "Uint128", "value": "20000000000004" },
-      { "vname": "dps_sold", "type": "Uint128", "value": "10123456" },
-      {
-        "vname": "owner",
-        "type": "ByStr20",
-        "value": "0x0000000000000000000000000000000000000001"
-      },
-      {
-        "vname": "withdrawer",
-        "type": "ByStr20",
-        "value": "0x0000000000000000000000000000000000000001"
-      },
-      {
-        "vname": "whitelist",
-        "type": "Map (ByStr20) (Uint128)",
-        "value": [
-          { "key": "0x2000000000000000000000000000000000000000", "val": "1" }
-        ]
-      }
-    ],
-    "events": [
-      {
-        "_eventname": "DPSsold",
-        "params": [
-          {
-            "vname": "caller",
-            "type": "ByStr20",
-            "value": "0x2000000000000000000000000000000000000000"
-          },
-          { "vname": "total_dps_sold", "type": "Uint128", "value": "10123456" }
-        ]
-      }
-    ]
-  }
+  "scilla_major_version": "0",
+  "gas_remaining": "5561",
+  "_accepted": "true",
+  "messages": [
+    {
+      "_tag": "AcceptZil",
+      "_amount": "10246912000000",
+      "_recipient": "0x2000000000000000000000000000000000000000",
+      "params": []
+    },
+    {
+      "_tag": "Transfer",
+      "_amount": "0",
+      "_recipient": "0x1000000000000000000000000000000000000001",
+      "params": [
+        {
+          "vname": "to",
+          "type": "ByStr20",
+          "value": "0x2000000000000000000000000000000000000000"
+        },
+        { "vname": "tokens", "type": "Uint128", "value": "14876544" },
+        { "vname": "code", "type": "Uint32", "value": "0" }
+      ]
+    }
+  ],
+  "states": [
+    { "vname": "_balance", "type": "Uint128", "value": "29753088000004" },
+    { "vname": "dps_sold", "type": "Uint128", "value": "15000000" },
+    {
+      "vname": "owner",
+      "type": "ByStr20",
+      "value": "0x0000000000000000000000000000000000000001"
+    },
+    {
+      "vname": "withdrawer",
+      "type": "ByStr20",
+      "value": "0x0000000000000000000000000000000000000001"
+    },
+    {
+      "vname": "whitelist",
+      "type": "Map (ByStr20) (Uint128)",
+      "value": [
+        { "key": "0x2000000000000000000000000000000000000000", "val": "1" }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "_eventname": "DPSsold",
+      "params": [
+        {
+          "vname": "caller",
+          "type": "ByStr20",
+          "value": "0x2000000000000000000000000000000000000000"
+        },
+        { "vname": "total_dps_sold", "type": "Uint128", "value": "15000000" }
+      ]
+    }
+  ]
+}
