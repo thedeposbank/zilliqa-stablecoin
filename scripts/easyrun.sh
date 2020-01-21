@@ -61,8 +61,13 @@ function run_test() {
 		fi
 	else
 		if echo "$messages" | grep -q 'Exception thrown' ; then
+			if [[ ! -f $test_dir/exception_expected.txt ]] ; then
+				print_error "unexpected exception: $messages"
+			fi
 			exception_expected=`cat $test_dir/exception_expected.txt`
-			if echo "$messages" | grep -q "String \"$exception_expected\"" ; then
+			simple_name_regex='^[a-zA-Z_]$'
+			[[ "$exception_expected" =~ $simple_name_regex ]] && exception_expected="String \"$exception_expected\""
+			if echo "$messages" | grep -q "$exception_expected" ; then
 				true
 			else
 				print_error "got wrong exception: $messages\nexpected: $exception_expected"

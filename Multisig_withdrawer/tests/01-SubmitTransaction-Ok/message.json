@@ -1,0 +1,27 @@
+{
+	"_tag": "SubmitTransaction",
+	"_amount": "0",
+	"_sender" : "0x0000000000000000000000000000000000000001",
+	"params": [
+		{
+			"vname": "wallet_contract",
+			"type": "ByStr20",
+			"value": "0x1000000000000000000000000000000000000001"
+		},
+		{
+			"vname": "recipient",
+			"type": "ByStr20",
+			"value": "0x2000000000000000000000000000000000000001"
+		},
+		{
+			"vname": "amount",
+			"type": "Uint128",
+			"value": "12345"
+		},
+		{
+			"vname": "tag",
+			"type": "String",
+			"value": "withdraw"
+		}
+	]
+}

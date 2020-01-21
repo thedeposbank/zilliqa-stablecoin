@@ -67,10 +67,11 @@ let mk_error_event =
     | NonOwnerCannotSubmit      => Int32 -11
     | IncorrectSignatureCount   => Int32 -12
     end in
-  { _eventname : "WalletError" ; err_code : err_code }
+  { _exception : "WalletError" ; err_code : err_code }
 
 let t = True
 let f = False
+let z128 = Uint128 0
 let zero = Uint32 0
 let one = Uint32 1
 let transaction_inc = one
@@ -99,7 +100,7 @@ let transaction_msg =
   fun (address : ByStr20) =>
   fun (amount : Uint128) =>
   fun (tag : String) =>
-    {_tag : tag; _recipient : wallet_contract; _amount : amount; to: address }
+    {_tag : tag; _recipient : wallet_contract; _amount : z128; to: address }
 
 (* Wrap one transaction message as singleton list *)
 let transaction_msg_as_list =
@@ -180,7 +181,7 @@ field transactions     : Map Uint32 Transaction =
 
 procedure MakeError (err : Error)
   e = mk_error_event err;
-  event e
+  throw e
 end
 
 (* Add signature to signature list *)
@@ -280,35 +281,26 @@ transition ExecuteTransaction (transactionId : Uint32)
       err = SenderMayNotExecute;
       MakeError err
     | True =>
-      (* Check for sufficient funds  *)
-      bal <- _balance;
-      not_enough_money = builtin lt bal amount;
-      match not_enough_money with
-      | True =>
-        err = InsufficientFunds;
+      sig_count_opt <- signature_counts[transactionId];
+      match sig_count_opt with
+      | None =>
+        (* Signature count not found, even though the transaction exists.*)
+        err = NoSignatureListFound;
         MakeError err
-      | False =>
-        sig_count_opt <- signature_counts[transactionId];
-        match sig_count_opt with
-        | None =>
-          (* Signature count not found, even though the transaction exists.*)
-          err = NoSignatureListFound;
+      | Some sig_count =>
+        not_enough_signatures = builtin lt sig_count required_signatures;
+        match not_enough_signatures with
+        | True =>
+          err = NotEnoughSignatures;
           MakeError err
-        | Some sig_count =>
-          not_enough_signatures = builtin lt sig_count required_signatures;
-          match not_enough_signatures with
-          | True =>
-            err = NotEnoughSignatures;
-            MakeError err
-          | False =>
-            (* Transaction approved, and enough money available. *)
-            (* Remove transaction and signatures, and execute. *)
-            DeleteTransaction transactionId;
-            msgs = transaction_msg_as_list wallet_contract recipient amount tag;
-            send msgs;
-            e = mk_transaction_executed_event transactionId wallet_contract recipient amount tag;
-            event e
-          end
+        | False =>
+          (* Transaction approved. *)
+          (* Remove transaction and signatures, and execute. *)
+          DeleteTransaction transactionId;
+          msgs = transaction_msg_as_list wallet_contract recipient amount tag;
+          send msgs;
+          e = mk_transaction_executed_event transactionId wallet_contract recipient amount tag;
+          event e
         end
       end
     end
@@ -343,9 +335,4 @@ transition RevokeSignature (transactionId : Uint32)
       end
     end
   end
-end
-
-(* Add funds to wallet *)
-transition AddFunds ()
-  accept
 end

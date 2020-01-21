@@ -1,0 +1,60 @@
+[
+	{ "vname": "_balance", "type": "Uint128", "value": "0" },
+	{
+		"vname": "signatures",
+		"type": "Map (Uint32) (Map (ByStr20) (Bool))",
+		"value": [
+			{
+				"key": "0",
+				"val": [
+					{
+						"key": "0x0000000000000000000000000000000000000001",
+						"val": { "constructor": "True", "argtypes": [], "arguments": [] }
+					}
+				]
+			}
+		]
+	},
+	{
+		"vname": "signature_counts",
+		"type": "Map (Uint32) (Uint32)",
+		"value": [ { "key": "0", "val": "1" } ]
+	},
+	{
+		"vname": "transactions",
+		"type": "Map (Uint32) (Transaction)",
+		"value": [
+			{
+				"key": "0",
+				"val": {
+					"constructor": "Trans",
+					"argtypes": [],
+					"arguments": [
+						"0x1000000000000000000000000000000000000001",
+						"0x2000000000000000000000000000000000000001", "12345",
+						"withdraw"
+					]
+				}
+			}
+		]
+	},
+	{
+		"vname": "owners",
+		"type": "Map (ByStr20) (Bool)",
+		"value": [
+			{
+				"key": "0x0000000000000000000000000000000000000001",
+				"val": { "constructor": "True", "argtypes": [], "arguments": [] }
+			},
+			{
+				"key": "0x0000000000000000000000000000000000000002",
+				"val": { "constructor": "True", "argtypes": [], "arguments": [] }
+			},
+			{
+				"key": "0x0000000000000000000000000000000000000003",
+				"val": { "constructor": "True", "argtypes": [], "arguments": [] }
+			}
+		]
+	},
+	{ "vname": "transactionCount", "type": "Uint32", "value": "1" }
+]

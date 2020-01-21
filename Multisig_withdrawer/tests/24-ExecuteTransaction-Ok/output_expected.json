@@ -1,0 +1,76 @@
+{
+  "scilla_major_version": "0",
+  "gas_remaining": "6588",
+  "_accepted": "false",
+  "messages": [
+    {
+      "_tag": "withdraw",
+      "_amount": "0",
+      "_recipient": "0x1000000000000000000000000000000000000001",
+      "params": [
+        {
+          "vname": "to",
+          "type": "ByStr20",
+          "value": "0x2000000000000000000000000000000000000001"
+        }
+      ]
+    }
+  ],
+  "states": [
+    { "vname": "_balance", "type": "Uint128", "value": "0" },
+    {
+      "vname": "signatures",
+      "type": "Map (Uint32) (Map (ByStr20) (Bool))",
+      "value": []
+    },
+    {
+      "vname": "signature_counts",
+      "type": "Map (Uint32) (Uint32)",
+      "value": []
+    },
+    {
+      "vname": "transactions",
+      "type": "Map (Uint32) (Transaction)",
+      "value": []
+    },
+    {
+      "vname": "owners",
+      "type": "Map (ByStr20) (Bool)",
+      "value": [
+        {
+          "key": "0x0000000000000000000000000000000000000001",
+          "val": { "constructor": "True", "argtypes": [], "arguments": [] }
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000003",
+          "val": { "constructor": "True", "argtypes": [], "arguments": [] }
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000002",
+          "val": { "constructor": "True", "argtypes": [], "arguments": [] }
+        }
+      ]
+    },
+    { "vname": "transactionCount", "type": "Uint32", "value": "1" }
+  ],
+  "events": [
+    {
+      "_eventname": "Transaction executed",
+      "params": [
+        { "vname": "transactionId", "type": "Uint32", "value": "0" },
+        {
+          "vname": "walletContract",
+          "type": "ByStr20",
+          "value": "0x1000000000000000000000000000000000000001"
+        },
+        {
+          "vname": "recipient",
+          "type": "ByStr20",
+          "value": "0x2000000000000000000000000000000000000001"
+        },
+        { "vname": "amount", "type": "Uint128", "value": "12345" },
+        { "vname": "tag", "type": "String", "value": "withdraw" }
+      ]
+    }
+  ]
+}
