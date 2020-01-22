@@ -49,7 +49,7 @@ The table below presents the mutable fields of the contract and their initial va
 
 | Name | Params | Description |
 |--|--|--|
-| `SubmitTransaction` | `recipient : ByStr20, amount : Uint128, tag : String` | Submit a transaction for future signoff. |
+| `SubmitTransaction` | `wallet_contract : ByStr20, recipient : ByStr20, amount : Uint128, tag : String` | Submit a transaction for future signoff. |
 | `SignTransaction`   | `transactionId : Uint32` | Sign off on an existing transaction. |
 | `ExecuteTransaction` | `transactionId : Uint32` | Execute signed-off transaction. |
 | `RevokeSignature` | `transactionId : Uint32` | Revoke signature of existing transaction, if it has not yet been executed. |
