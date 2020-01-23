@@ -73,7 +73,7 @@ procedure startFundr()
 end
 
 procedure endFundr()
-    msg  = { _tag : "onFundrasingEnd"; _recipient : dps_contract; _amount : Uint128 0};
+    msg  = { _tag : "onFundraisingEnd"; _recipient : dps_contract; _amount : Uint128 0};
     msgs = one_msg msg;
     send msgs
 end
@@ -120,8 +120,8 @@ transition buyDPS()
             msg1 = { _tag : "Transfer"; _recipient : dps_contract; _amount : Uint128 0;
                     to : _sender; tokens : dps_to_send; code : Uint32 0};
             msg2 = {_tag : "AcceptZil";_recipient : _sender; _amount : zil_to_return};
-            msgs1 = one_msg msg1;
-            msgs2 = Cons {Message} msg2 msgs1;
+            msgs1 = one_msg msg2;
+            msgs2 = Cons {Message} msg1 msgs1;
             send msgs2;
 
             dps_sold_v = builtin add ds dps_to_send;
@@ -157,7 +157,7 @@ transition withdraw(to : ByStr20)
             e = {_eventname : "WithdrawSuccess"; caller : _sender; zil_amount : bal};
             event e
         | False =>
-            e = { _exception : "FundrasingNotOver"};
+            e = { _exception : "FundraisingNotOver"};
             throw e
         end
     | False =>
@@ -225,7 +225,7 @@ transition updateWithdrawer(newWithdrawer : ByStr20)
     end
 end
 
-transition endFundrasing()
+transition endFundraising()
     ow <- owner;
     valid_auth = builtin eq _sender ow;
     match valid_auth with

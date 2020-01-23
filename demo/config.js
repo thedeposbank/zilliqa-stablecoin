@@ -56,6 +56,28 @@ const config = {
 		'dbond deposit',
 		'dbond exchange'
 	],
+	balances: [
+		{
+			name: 'buyer',
+			address: accounts.buyer.address,
+			value: null
+		},
+		{
+			name: 'fundrContract',
+			address: contractAddresses.fundrContract,
+			value: null
+		},
+		{
+			name: 'devAcc',
+			address: accounts.signer2.address,
+			value: null
+		},
+		{
+			name: 'final',
+			address: accounts.signer1.address,
+			value: null
+		}
+	],
 	contracts: {
 		dpsContract: {
 			fileName: '../DPS_token/DPS_token.scilla',
@@ -79,7 +101,7 @@ const config = {
 				{
 					vname : "decimals",
 					type : "Uint32",
-					value : "4"
+					value : "6"
 				},
 				{
 					vname : "init_owner",
@@ -114,7 +136,7 @@ const config = {
 					address: 'ByStr20'
 				},
 				changeDevAcc: {
-					address: 'ByStr20'
+					newDevAcc: 'ByStr20'
 				},
 				pause: {},
 				unpause: {},
@@ -167,27 +189,27 @@ const config = {
 				{
 					vname: "start_block",
 					type: "BNum",
-					value: "1100000"
+					value: "1080000"
 				},
 				{
 					vname: "end_block",
 					type: "BNum",
-					value: "1100010"
+					value: "1100000"
 				},
 				{
 					vname: "dps_amount",
 					type: "Uint128",
-					value: "500000"      // 50 DPS
+					value: "50000000"      // 50 DPS
 				},
 				{
 					vname: "dps_price",
 					type: "Uint128",
-					value: "10000"       // 1 ZIL
+					value: "1000000"       // 1 ZIL
 				},
 				{
 					vname: "price_decimals",
 					type: "Uint32",
-					value: "4"
+					value: "6"
 				},
 				{
 					vname: "public",
@@ -198,7 +220,7 @@ const config = {
 			transitions: {
 				buyDPS: {},
 				withdraw: { to: 'ByStr20' },
-				endFundrasing: {},
+				endFundraising: {},
 				whitelist: { address: 'ByStr20' },
 				unWhitelist: { address: 'ByStr20' },
 				transferOwnership: { newOwner: 'ByStr20' },

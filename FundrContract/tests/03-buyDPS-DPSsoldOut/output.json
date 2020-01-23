@@ -4,12 +4,6 @@
   "_accepted": "true",
   "messages": [
     {
-      "_tag": "AcceptZil",
-      "_amount": "1000000000000",
-      "_recipient": "0x2000000000000000000000000000000000000000",
-      "params": []
-    },
-    {
       "_tag": "Transfer",
       "_amount": "0",
       "_recipient": "0x1000000000000000000000000000000000000001",
@@ -22,6 +16,12 @@
         { "vname": "tokens", "type": "Uint128", "value": "0" },
         { "vname": "code", "type": "Uint32", "value": "0" }
       ]
+    },
+    {
+      "_tag": "AcceptZil",
+      "_amount": "1000000000000",
+      "_recipient": "0x2000000000000000000000000000000000000000",
+      "params": []
     }
   ],
   "states": [

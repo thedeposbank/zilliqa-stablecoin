@@ -2,21 +2,7 @@
   "scilla_major_version": "0",
   "gas_remaining": "6962",
   "_accepted": "false",
-  "messages": [
-    {
-      "_tag": "BurnSuccess",
-      "_amount": "0",
-      "_recipient": "0x0000000000000000000000000000000000000002",
-      "params": [
-        {
-          "vname": "sender",
-          "type": "ByStr20",
-          "value": "0x0000000000000000000000000000000000000002"
-        },
-        { "vname": "amount", "type": "Uint128", "value": "1234" }
-      ]
-    }
-  ],
+  "messages": [],
   "states": [
     { "vname": "_balance", "type": "Uint128", "value": "0" },
     { "vname": "totalSupply", "type": "Uint128", "value": "10000" },

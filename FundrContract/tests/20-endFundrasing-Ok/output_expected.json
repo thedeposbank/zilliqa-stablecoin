@@ -4,7 +4,7 @@
   "_accepted": "false",
   "messages": [
     {
-      "_tag": "onFundrasingEnd",
+      "_tag": "onFundraisingEnd",
       "_amount": "0",
       "_recipient": "0x1000000000000000000000000000000000000001",
       "params": []

@@ -360,11 +360,7 @@ procedure burnAll(from : ByStr20)
     t <- totalSupply;
     newTotalSupply = builtin sub t balance;
     totalSupply := newTotalSupply;
-    balances[from] := zero; (* or maybe better delete? *)
-    msg = { _tag : "BurnSuccess"; _recipient : from; _amount : zero;
-            sender : _sender; amount : balance };
-    msgs = one_msg msg;
-    send msgs
+    balances[from] := zero (* or maybe better delete? *)
   | None =>
     (* NOP? *)
   end
@@ -536,11 +532,7 @@ transition burn(value : Uint128)
         newTotalSupply = builtin sub t value;
         totalSupply := newTotalSupply;
         new_bal = builtin sub current_bal value;
-        balances[_sender] := new_bal;
-        msg = { _tag : "BurnSuccess"; _recipient : _sender; _amount : zero;
-                sender : _sender; amount : value };
-        msgs = one_msg msg;
-        send msgs
+        balances[_sender] := new_bal
       | False =>
         e = { _exception : "OverdrawnBalance" };
         throw e

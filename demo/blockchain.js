@@ -60,16 +60,20 @@ async function getState(address) {
 	return await contract.getState();
 }
 
+async function getBalance(address) {
+	return await zilliqa.blockchain.getBalance(address);
+}
+
 // address -- address or contract name as it is in config.contracts
 // caller -- account name as it is in config.accounts
-async function runTransition(address, transition, args, caller) {
+async function runTransition(address, transition, args, caller, amount) {
 	if(address.slice(0, 2) != '0x')
 		address = config.contracts[address].address;
 	const gasPrice = await getGasPrice();
 	const contract = zilliqa.contracts.at(address);
 	const txParams = {
 		version: VERSION,
-		amount: new BN(0),
+		amount: new BN(amount || 0),
 		gasPrice,
 		gasLimit: Long.fromNumber(10000)
 	};
@@ -92,6 +96,7 @@ function createAccount(testnet = true) {
 module.exports = {
 	deployContract,
 	getState,
+	getBalance,
 	runTransition,
 	createAccount
 };

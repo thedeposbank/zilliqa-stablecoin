@@ -22,7 +22,7 @@ The table below lists the parameters that are defined at the contract deployment
 |`init_withdrawer`|`ByStr20`| The initial withdrawer in the contract. |
 |`dps_contract` | `ByStr20` | Address of DPS token contract. |
 |`start_block`  | `BNum`    | Start block number. From this block fundraising is enabled. |
-|`end_block`    | `Bnum`    | End block number. From this block fundrasing is disabled. |
+|`end_block`    | `Bnum`    | End block number. From this block fundraising is disabled. |
 |`dps_amount`   | `Uint128` | Amount of DPS to sell. |
 |`dps_price`    | `Uint128` | Price for one DPS token. |
 |`public`       | `Boolean` | Are fundraisng transfers are received from any address or from approved addresses only. |
@@ -47,14 +47,14 @@ The table below presents the mutable fields of the contract and their initial va
 
 ### Transitions
 
-#### Fundrasing transitions
+#### Fundraising transitions
 
 | Name | Params | Description | `_sender` |
 |--|--|--|--|
 |`buyDPS`| `-` | Swap `_amount` of ZIL to appropriate amount of DPS. Available only strictly within (`start_block`, `end_block`) interval | any (whitelisted, if sale is not public)|
 |`withdraw`| `to : ByStr20` | Transfer all collected funds to given address. When fundraising contract is deployed, there is no known target address for collected funds, so we need this transition to manually point the target address. | `withdrawer` |
-|`onFundrConnect`|`-`|Processes notification when this contract is connected to `dps_contract` as fundrasing contract, as a responce calls `onStartFundrasing` | `dps_contract` |
-| `endFundrasing` | `-` | Calls `onFundrasingEnd` transition of `dps_contract`. Might be called any time no matter block number and total amount of sold `DPS` tokens. Expected that all `DPS` balance of current contract is burnt after the call  | `owner` |
+|`onFundrConnect`|`-`|Processes notification when this contract is connected to `dps_contract` as fundraising contract, as a responce calls `onStartFundraising` | `dps_contract` |
+| `endFundraising` | `-` | Calls `onFundraisingEnd` transition of `dps_contract`. Might be called any time no matter block number and total amount of sold `DPS` tokens. Expected that all `DPS` balance of current contract is burnt after the call  | `owner` |
 
 #### Housekeeping Transitions
 

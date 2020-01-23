@@ -40,11 +40,11 @@ switch(process.argv[2]) {
 		runTest(process.argv[3]);
 		break;
 	case 'scenario':
-		runServer();
+		// runServer();
 		runScenario();
 		break;
 	case 'scenario2':
-		runServer();
+		// runServer();
 		runScenario2();
 		break;
 	case 'genacc':
@@ -130,10 +130,9 @@ async function runTest(testName) {
 	console.log('done, txid:', tx.id);
 }
 
-async function callTransition(callerName, contractName, transition, args) {
-
-	debug('calling: %s => %s.%s(%s)', callerName, contractName, transition, stringify(args, makeHumanReadable, 2));
-	await pause('press any key to proceed...');
+async function callTransition(callerName, contractName, transition, args, amount) {
+	debug('calling: %s => %s.%s(%s, %f)', callerName, contractName, transition, stringify(args, makeHumanReadable, 2), amount || 0);
+	// await pause('press any key to proceed...');
 	if(!config.accounts[callerName])
 		throw new Error('unknown caller name ' + callerName);
 	if(!config.contracts[contractName])
@@ -152,7 +151,8 @@ async function callTransition(callerName, contractName, transition, args) {
 		}
 		argsArray.push(v);
 	}
-	const tx = await blockchain.runTransition(contractName, transition, argsArray, callerName);
+	amount = amount && Math.round(amount*1e12);
+	const tx = await blockchain.runTransition(contractName, transition, argsArray, callerName, amount);
 	debug('done, tx.id: %s, receipt: %s', tx.id, stringify(tx.txParams.receipt, null, 2));
 	if(!tx.isConfirmed())
 		throw new Error('tx is not confirmed!');
@@ -179,9 +179,15 @@ function makeHumanReadable(key, value) {
 async function showState() {
 	debug('requesting contracts state...');
 	await updateGlobalState((contractName, state) => {
-		debug('state of contract %s:', contractName);
-		debug(stringify(state, makeHumanReadable, 2) + '\n');
+		console.log('state of contract %s:', contractName);
+		console.log(stringify(state, makeHumanReadable, 2) + '\n');
 	});
+	// update and show balances
+	const balances = await Promise.all(config.balances.map(b => blockchain.getBalance(b.address)));
+	for(let i = 0; i < balances.length; i++) {
+		config.balances[i].value = parseInt(balances[i].result.balance) * 1e-12;
+		console.log('    ' + config.balances[i].name + ': ' + config.balances[i].value);
+	}
 	debug('contracts state updated');
 }
 
@@ -231,7 +237,7 @@ async function pause(msg, delay) {
 		stdin.on('data', s => {
 			stdin.setRawMode(false);
 			resolve(s);
-			if(s == 'q') {
+			if(s == 'q' || s == '\x03') {
 				console.log('exit');
 				process.exit(2);
 			}
@@ -255,7 +261,11 @@ function generateAccounts() {
 async function runScenario() {
 	await showState();
 
-	await callTransition('owner', 'dpsContract', 'changeDevAcc', {newDevAcc: config.accounts.signer2});
+	await callTransition('owner', 'dpsContract', 'changeDevAcc', {newDevAcc: config.accounts.signer2.address});
+	await showState();
+
+	await callTransition('owner', 'dpsContract', 'updateFundraisingManager',
+		{newFundraisingManager: config.accounts.fundraisingManager.address});
 	await showState();
 
 	await callTransition('fundraisingManager', 'dpsContract', 'connectFundraisingContract',
@@ -265,24 +275,24 @@ async function runScenario() {
 	await callTransition('owner', 'fundrContract', 'whitelist', {address: config.accounts.buyer.address});
 	await showState();
 
-	await callTransition('address1', 'fundrContract', 'buyDPS', {_amount: 45}); // _amount in ZILs as float number
+	await callTransition('buyer', 'fundrContract', 'buyDPS', {}, 45); // _amount in ZILs as float number
 	await showState();
 
-	await callTransition('address1', 'fundrContract', 'buyDPS', {_amount: 10}); // should get 5 ZILs of change
+	await callTransition('buyer', 'fundrContract', 'buyDPS', {}, 10); // should get 5 ZILs of change
 	await showState();
 
 	await callTransition('signer1', 'wdrContract', 'SubmitTransaction', {
 		wallet_contract: config.contracts.fundrContract.address,
 		recipient: config.accounts.signer1.address,
-		amount: 1,
-		tag: withdraw
+		amount: "42",
+		tag: 'withdraw'
 	});
 	await showState();
 
-	await callTransition('signer2', 'wdrContract', 'SignTransaction', {transactionId: 0});
+	await callTransition('signer2', 'wdrContract', 'SignTransaction', {transactionId: "0"});
 	await showState();
 
-	await callTransition('signer1', 'wdrContract', 'ExecuteTransaction', {transactionId: 0});
+	await callTransition('signer1', 'wdrContract', 'ExecuteTransaction', {transactionId: "0"});
 	await showState();
 
 	await callTransition('owner', 'fundrContract', 'endFundraising', {});
@@ -295,7 +305,11 @@ async function runScenario() {
 async function runScenario2() {
 	await showState();
 
-	await callTransition('owner', 'dpsContract', 'changeDevAcc', {newDevAcc: config.accounts.signer2});
+	await callTransition('owner', 'dpsContract', 'changeDevAcc', {newDevAcc: config.accounts.signer2.address});
+	await showState();
+
+	await callTransition('owner', 'dpsContract', 'updateFundraisingManager',
+		{newFundraisingManager: config.accounts.fundraisingManager.address});
 	await showState();
 
 	await callTransition('fundraisingManager', 'dpsContract', 'connectFundraisingContract',
@@ -305,7 +319,7 @@ async function runScenario2() {
 	await callTransition('owner', 'fundrContract', 'whitelist', {address: config.accounts.buyer.address});
 	await showState();
 
-	await callTransition('address1', 'fundrContract', 'buyDPS', {_amount: 45}); // 5 ZILs left in fundraising contract
+	await callTransition('buyer', 'fundrContract', 'buyDPS', {_amount: 45}); // 5 DPS left in fundraising contract
 	await showState();
 
 	await callTransition('owner', 'fundrContract', 'endFundraising', {});
@@ -314,16 +328,15 @@ async function runScenario2() {
 	await callTransition('signer1', 'wdrContract', 'SubmitTransaction', {
 		wallet_contract: config.contracts.fundrContract.address,
 		recipient: config.accounts.signer1.address,
-		amount: 1,
-		tag: withdraw
+		amount: "42",
+		tag: 'withdraw'
 	});
-
-	await callTransition('signer1', 'wdrContract', 'ExecuteTransaction', {transactionId: 0});
 	await showState();
 
-	await callTransition('owner', 'fundrContract', 'endFundraising', {});
+	await callTransition('signer2', 'wdrContract', 'SignTransaction', {transactionId: "0"});
 	await showState();
 
+	await callTransition('signer1', 'wdrContract', 'ExecuteTransaction', {transactionId: "0"});
 	await showState();
 
 	await pause('press any key to quit')
