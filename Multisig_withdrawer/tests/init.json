@@ -1,0 +1,52 @@
+[
+	{
+		"vname" : "_scilla_version",
+		"type" : "Uint32",
+		"value" : "0"
+	},
+	{
+		"vname" : "_creation_block",
+		"type" : "BNum",
+		"value" : "1"
+	},
+	{
+		"vname" : "_this_address",
+		"type" : "ByStr20",
+		"value" : "0x1000000000000000000000000000000000000000"
+	},
+	{
+		"vname" : "owners_list",
+		"type" : "List ByStr20",
+		"value" : {
+			"constructor" : "Cons",
+			"argtypes"    : [ "ByStr20" ],
+			"arguments"   : [
+				"0x0000000000000000000000000000000000000001",
+				{
+					"constructor" : "Cons",
+					"argtypes"    : [ "ByStr20" ],
+					"arguments"   : [
+						"0x0000000000000000000000000000000000000002",
+						{
+							"constructor" : "Cons",
+							"argtypes"    : [ "ByStr20" ],
+							"arguments"   : [
+								"0x0000000000000000000000000000000000000003",
+								{
+									"constructor" : "Nil",
+									"argtypes"    : [ "ByStr20" ],
+									"arguments"   : []
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	{
+		"vname" : "required_signatures",
+		"type" : "Uint32",
+		"value" : "2"
+	}
+]

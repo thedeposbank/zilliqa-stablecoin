@@ -1,0 +1,43 @@
+{
+  "scilla_major_version": "0",
+  "gas_remaining": "7131",
+  "_accepted": "false",
+  "messages": [],
+  "states": [
+    { "vname": "_balance", "type": "Uint128", "value": "4" },
+    {
+      "vname": "owner",
+      "type": "ByStr20",
+      "value": "0x0000000000000000000000000000000000000001"
+    },
+    {
+      "vname": "withdrawer",
+      "type": "ByStr20",
+      "value": "0x0000000000000000000000000000000000000002"
+    },
+    { "vname": "dps_sold", "type": "Uint128", "value": "123456" },
+    {
+      "vname": "whitelist",
+      "type": "Map (ByStr20) (Uint128)",
+      "value": [
+      ]
+    }
+  ],
+  "events": [
+    {
+      "_eventname": "UnWhitelistSuccess",
+      "params": [
+        {
+          "vname": "caller",
+          "type": "ByStr20",
+          "value": "0x0000000000000000000000000000000000000001"
+        },
+        {
+          "vname": "address",
+          "type": "ByStr20",
+          "value": "0x2000000000000000000000000000000000000000"
+        }
+      ]
+    }
+  ]
+}

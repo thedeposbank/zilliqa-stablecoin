@@ -1,0 +1,32 @@
+[
+	{
+		"vname": "owner",
+		"type": "ByStr20",
+		"value": "0x0000000000000000000000000000000000000001"
+	},
+	{
+		"vname": "withdrawer",
+		"type": "ByStr20",
+		"value": "0x0000000000000000000000000000000000000001"
+	},
+	{
+		"vname": "dps_sold",
+		"type": "Uint128",
+		"value": "123456"
+	},
+	{
+		"vname": "whitelist",
+		"type": "Map (ByStr20) (Uint128)",
+		"value": [
+			{
+				"key": "0x2000000000000000000000000000000000000000",
+				"val": "1"
+			}
+		]
+	},
+	{
+		"vname": "_balance",
+		"type": "Uint128",
+		"value": "4"
+	}
+]

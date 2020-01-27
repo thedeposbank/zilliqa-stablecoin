@@ -1,0 +1,6 @@
+{
+	"_tag": "updateWithdrawer",
+	"_amount": "0",
+	"_sender" : "0x2000000000000000000000000000000000000002",
+	"params": [ { "vname": "newWithdrawer", "type": "ByStr20", "value": "0x2000000000000000000000000000000000000002" } ]
+}

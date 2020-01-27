@@ -28,6 +28,17 @@ function run_test() {
 
 	title "running test in $test_dir" 
 
+	cmdline="scilla-runner
+		-init $init
+		-istate $test_dir/state.json
+		-imessage $test_dir/message.json
+		-iblockchain $test_dir/blockchain.json
+		-i $test_dir/../../$dir.scilla
+		-o $test_dir/output.json
+		-gaslimit 8000"
+
+	# echo "$cmdline"
+
 	messages=`scilla-runner \
 		-init $init \
 		-istate $test_dir/state.json \
@@ -50,10 +61,16 @@ function run_test() {
 		fi
 	else
 		if echo "$messages" | grep -q 'Exception thrown' ; then
-			if echo "$messages" | grep -q `cat $test_dir/exception_expected.txt` ; then
+			if [[ ! -f $test_dir/exception_expected.txt ]] ; then
+				print_error "unexpected exception: $messages"
+			fi
+			exception_expected=`cat $test_dir/exception_expected.txt`
+			simple_name_regex='^[a-zA-Z_]$'
+			[[ "$exception_expected" =~ $simple_name_regex ]] && exception_expected="String \"$exception_expected\""
+			if echo "$messages" | grep -q "$exception_expected" ; then
 				true
 			else
-				print_error "got wrong exception: $messages"
+				print_error "got wrong exception: $messages\nexpected: $exception_expected"
 				exit $status
 			fi
 		else

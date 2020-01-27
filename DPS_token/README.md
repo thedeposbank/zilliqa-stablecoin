@@ -102,6 +102,7 @@ The table below presents the mutable fields of the contract and their initial va
 | Name | Params | Description | `_sender` | Callable when paused? |
 |--|--|--|--|--|
 |`BalanceOf`| `tokenOwner : ByStr20` | Transition to learn balance of some token owner. Sends back message `BalanceOfResponse` with fields `address` and `balance`. | any | :heavy_check_mark: |
+|`TotalSupply`| | Transition to learn total supply of tokens. Sends back message `TotalSupplyResponse` with field `totalSupply`. | any | :heavy_check_mark: |
 |`Approve`| `spender : ByStr20, value : Uint128` | Approve a `spender` to spend on behalf of a token holder (`_sender`) upto the `value` amount. | any | :x: |
 |`Transfer`| `to : ByStr20, value : Uint128, code : Uint32` | Transfer `value` number of tokens from the `_sender` to the `to` address. | `from` | :x: |
 |`TransferFrom`| `from : ByStr20, to : ByStr20, value : Uint128, code : Uint32` | Transfer `value` number of tokens on behalf of the `from` to the `to` address. | any | :x: |

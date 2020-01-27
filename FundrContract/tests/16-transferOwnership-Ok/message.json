@@ -1,0 +1,6 @@
+{
+	"_tag": "transferOwnership",
+	"_amount": "0",
+	"_sender" : "0x0000000000000000000000000000000000000001",
+	"params": [ { "vname": "newOwner", "type": "ByStr20", "value": "0x2000000000000000000000000000000000000001" } ]
+}

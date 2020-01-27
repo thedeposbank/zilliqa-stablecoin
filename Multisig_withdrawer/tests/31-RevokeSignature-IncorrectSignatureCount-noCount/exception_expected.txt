@@ -1,0 +1,1 @@
+(_exception : (String "WalletError")) ; (err_code : (Int32 -12))

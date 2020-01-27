@@ -1,0 +1,12 @@
+{
+	"_tag": "updateContractApprover",
+	"_amount": "0",
+	"_sender" : "0x2000000000000000000000000000000000000001",
+	"params": [
+		{
+			"vname" : "newContractApprover",
+			"type" : "ByStr20",
+			"value" : "0x0000000000000000000000000000000000000018"
+		}
+	]
+}
