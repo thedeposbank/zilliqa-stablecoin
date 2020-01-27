@@ -189,12 +189,12 @@ const config = {
 				{
 					vname: "start_block",
 					type: "BNum",
-					value: "1080000"
+					value: "1083500"
 				},
 				{
 					vname: "end_block",
 					type: "BNum",
-					value: "1100000"
+					value: "1083620" // + ~1 hour
 				},
 				{
 					vname: "dps_amount",

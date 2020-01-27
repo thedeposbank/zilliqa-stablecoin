@@ -319,7 +319,7 @@ async function runScenario2() {
 	await callTransition('owner', 'fundrContract', 'whitelist', {address: config.accounts.buyer.address});
 	await showState();
 
-	await callTransition('buyer', 'fundrContract', 'buyDPS', {_amount: 45}); // 5 DPS left in fundraising contract
+	await callTransition('buyer', 'fundrContract', 'buyDPS', {}, 45); // 5 DPS left in fundraising contract
 	await showState();
 
 	await callTransition('owner', 'fundrContract', 'endFundraising', {});
@@ -335,6 +335,8 @@ async function runScenario2() {
 
 	await callTransition('signer2', 'wdrContract', 'SignTransaction', {transactionId: "0"});
 	await showState();
+
+	await pause('now let\'s wait for block ' + config.contracts.fundrContract.init.find(param => param.vname == 'end_block').value);
 
 	await callTransition('signer1', 'wdrContract', 'ExecuteTransaction', {transactionId: "0"});
 	await showState();
