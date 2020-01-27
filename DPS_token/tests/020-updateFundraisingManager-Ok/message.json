@@ -1,0 +1,12 @@
+{
+	"_tag": "updateFundraisingManager",
+	"_amount": "0",
+	"_sender" : "0x0000000000000000000000000000000000000002",
+	"params": [
+		{
+			"vname" : "newFundraisingManager",
+			"type" : "ByStr20",
+			"value" : "0x0000000000000000000000000000000000000015"
+		}
+	]
+}

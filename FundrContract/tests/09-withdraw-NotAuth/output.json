@@ -1,0 +1,47 @@
+{
+  "scilla_major_version": "0",
+  "gas_remaining": "6941",
+  "_accepted": "false",
+  "messages": [
+    {
+      "_tag": "ZILtoCapital",
+      "_amount": "4",
+      "_recipient": "0x2000000000000000000000000000000000000001",
+      "params": []
+    }
+  ],
+  "states": [
+    { "vname": "_balance", "type": "Uint128", "value": "0" },
+    {
+      "vname": "owner",
+      "type": "ByStr20",
+      "value": "0x0000000000000000000000000000000000000001"
+    },
+    {
+      "vname": "withdrawer",
+      "type": "ByStr20",
+      "value": "0x0000000000000000000000000000000000000002"
+    },
+    { "vname": "dps_sold", "type": "Uint128", "value": "123456" },
+    {
+      "vname": "whitelist",
+      "type": "Map (ByStr20) (Uint128)",
+      "value": [
+        { "key": "0x2000000000000000000000000000000000000000", "val": "1" }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "_eventname": "WithdrawSuccess",
+      "params": [
+        {
+          "vname": "caller",
+          "type": "ByStr20",
+          "value": "0x0000000000000000000000000000000000000002"
+        },
+        { "vname": "zil_amount", "type": "Uint128", "value": "4" }
+      ]
+    }
+  ]
+}

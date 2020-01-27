@@ -1,0 +1,12 @@
+{
+	"_tag": "onFundraisingStart",
+	"_amount": "0",
+	"_sender" : "0x2000000000000000000000000000000000000001",
+	"params": [
+		{
+			"vname" : "amount",
+			"type" : "Uint128",
+			"value" : "1000"
+		}
+	]
+}
